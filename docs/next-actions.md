@@ -1,4 +1,4 @@
-# Next Actions: Claude Cert Workshop
+# Next Actions: Closed Book
 
 ## Immediate
 

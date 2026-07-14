@@ -1,4 +1,4 @@
-# Decisions: Claude Cert Workshop
+# Decisions: Closed Book
 
 | Date | Decision | Rationale |
 |---|---|---|

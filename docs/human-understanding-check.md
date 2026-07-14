@@ -1,4 +1,4 @@
-# Human Understanding Check: Claude Cert Workshop
+# Human Understanding Check: Closed Book
 
 ## Human Understanding Check
 

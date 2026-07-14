@@ -1,12 +1,12 @@
-# CLAUDE.md — Claude Cert Workshop
+# CLAUDE.md — Closed Book
 
 ## Project Classification
 
 - **Type:** factory-output
-- **Name:** claude-cert-workshop
-- **Title:** Claude Cert Workshop
-- **Local repo:** /Users/hekton/Development/hekton/factory-output/claude-cert-workshop
-- **Vault control plane:** /Users/hekton/vaults/hekton-mind-palace/20-projects/factory-output/claude-cert-workshop
+- **Name:** closed-book
+- **Title:** Closed Book
+- **Local repo:** /Users/hekton/Development/hekton/factory-output/closed-book
+- **Vault control plane:** /Users/hekton/vaults/hekton-mind-palace/20-projects/factory-output/closed-book
 - **Lifecycle stage:** active
 - **Promotion target:** none
 - **Privacy boundary:** public
@@ -21,7 +21,7 @@ Specific to this project:
 - Work on a short-lived branch `agent/<agent-name>/<task-slug>` — never commit directly to `main`/`master`; open a PR for review. See `~/hekton/.rules/git-contract.md`.
 - Classification is **factory-output** — respect the corresponding naming and path conventions
 - Inspect `.hekton/project.yaml` before making structural changes
-- Do not create files outside `/Users/hekton/Development/hekton/factory-output/claude-cert-workshop` without confirmation
+- Do not create files outside `/Users/hekton/Development/hekton/factory-output/closed-book` without confirmation
 - Do not write to the vault without explicit authorisation — check `vault_mutation_allowed` in `.hekton/project.yaml` first (authoritative; do not trust a restated value elsewhere)
 - Record all design decisions in `docs/decisions.md`
 - Keep risks current in `docs/risks.md` and `.hekton/risk-register.yaml`

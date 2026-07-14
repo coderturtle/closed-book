@@ -1,4 +1,4 @@
-# Claude Cert Workshop
+# Closed Book
 
 **Classification:** factory-output
 **Lifecycle:** active

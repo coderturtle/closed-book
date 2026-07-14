@@ -1,4 +1,4 @@
-# Session Log: Claude Cert Workshop
+# Session Log: Closed Book
 
 ## 2026-07-14 - Initial scaffold
 

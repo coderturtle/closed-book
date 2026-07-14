@@ -1,4 +1,4 @@
-# Risks: Claude Cert Workshop
+# Risks: Closed Book
 
 ## Risk Register
 

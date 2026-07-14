@@ -4,9 +4,9 @@ classification: factory-output
 status: active
 lifecycle_stage: active
 created: 2026-07-14
-project: claude-cert-workshop
-title: Claude Cert Workshop
-mind_palace_path: 20-projects/factory-output/claude-cert-workshop
+project: closed-book
+title: Closed Book
+mind_palace_path: 20-projects/factory-output/closed-book
 owner: coderturtle
 promotion_target: none
 privacy_boundary: public
@@ -14,7 +14,7 @@ vault_mutation_allowed: false
 version: ""
 ---
 
-# Claude Cert Workshop
+# Closed Book
 
 > Learn Anthropic's Claude Developer certification material (Foundations to Professional) the agent-native way: hands-on Claude Code exercises gated by closed-book practice checkpoints against the published exam blueprint.
 
@@ -39,4 +39,4 @@ Active — scaffolded 2026-07-14
 
 ## Factory Repo
 
-`/Users/hekton/Development/hekton/factory-output/claude-cert-workshop`
+`/Users/hekton/Development/hekton/factory-output/closed-book`

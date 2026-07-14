@@ -1,4 +1,4 @@
-# Depth Decision: Claude Cert Workshop
+# Depth Decision: Closed Book
 
 ## Depth Decision
 

@@ -1,4 +1,4 @@
-# Architecture: Claude Cert Workshop
+# Architecture: Closed Book
 
 ## Overview
 
