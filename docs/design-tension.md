@@ -36,10 +36,12 @@ has only ever had Claude reason through agentic-loop tradeoffs *for* them has no
 of reasoning through it *themselves* — the closed-book checkpoint would be the first time they've
 ever tried.
 
-## The two-tier gate is the resolution, not a workaround
+## The two-tier gate is the proposed resolution — a stated hypothesis, not a proven one
 
-Every module's required gate (`docs/workshop-design.md`) has both tiers **by design**, not as a
-late patch:
+**Named up front, not just at the end of this section:** everything below describes a deliberate
+design choice, not a validated result. No module content exists yet and neither real exam has
+been sat. Every module's required gate (`docs/workshop-design.md`) has both tiers **by design**,
+not as a late patch:
 
 1. **Build it with Claude Code.** This is where real understanding gets constructed — the same
    "harness is the classroom" bet every workshop in this pipeline makes. Skipping this tier and
