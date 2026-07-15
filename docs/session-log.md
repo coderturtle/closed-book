@@ -131,3 +131,76 @@ Module 02, authoring both tiers together this time. See `docs/next-actions.md`.
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR, per this repo's own established discipline.
+
+## 2026-07-15 (cont'd) - Module 02 authored, both tiers together
+
+### What changed
+
+- Implemented `extract_refund_request` interface stub (`fixtures/resolve/src/extraction.py`) and a real, provided pytest suite (`fixtures/resolve/tests/test_extraction.py`, 7 tests) as Module 02's deterministic gate.
+- Wrote `scripts/verify_module_02.py`, implementing the cumulative-gate convention for real: it imports and calls `check_module_01` before running its own pytest check, and correctly fails at that step (before pytest even runs) when Module 01's configuration is absent — isolation-tested directly.
+- Authored `modules/02-prompts-structured-output/checkpoint.md`: 12 originally-written questions, full CCA-F Domain 4 coverage (4.1-4.6), built alongside the hands-on tier from the start rather than as a follow-up remediation.
+- Ran a real dry run (`runs/2026-07-15-module-02-dry-run/`): a correct reference implementation (7/7), a naive no-retry attempt (4/7, fails broadly), and a subtler attempt using a real Python footgun (`raw.get(x) or 0`) that fabricates a refund amount (6/7, fails narrowly on exactly the test built to catch it).
+- Found and fixed a bug in the dry run's own construction of the third attempt before recording it as a finding: the first version used the wrong failure pattern (`raw.get(x, 0)`, which only fires on an absent key) and was never actually exercised by the test suite, which always supplies an explicit `None`.
+- Added `fixtures/resolve/requirements.txt` (pytest) as the project's first real Python dependency.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 Module 02 entries.
+
+### Assumptions
+
+Module 02's conceptual-tier criteria (few-shot quality, retry-message specificity, documented nullable rationale) are untested by dry-run attempts — all 3 constructed attempts differ only in `extraction.py`'s runtime behavior, not prompt-design artifacts. Logged in `docs/next-actions.md`.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Module 03 (Designing Tools and MCP Interfaces), continuing `resolve`, both tiers together. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_02.py` run against all 3 constructed attempts plus an isolation check (cumulative gate blocks correctly with no Module 01 config present) — all match expectations. No real learner attempt yet.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
+
+## 2026-07-15 (cont'd) - Doubt-driven-development review of Module 02, and remediation
+
+At the user's request, ran the same doubt-driven-development process used for Module 01 against Module 02 before treating it as done: a fresh-context Claude subagent, Codex CLI (with live web-search access), and a Fable-model subagent to critique and replan given both reviews' findings.
+
+### What changed
+
+- Both reviews found real, substantial, largely non-overlapping issues. The dominant one, more severe than anything in Module 01's review: rubric criteria 3 and 4 graded a prompt/few-shot artifact the exercise's original interface never actually required a learner to produce — `model_client` was fully injected, with no place in the exercise for real prompt-engineering content to exist.
+- Fable's structural call, adopted: change the interface, not the rubric. Added `build_extraction_prompt(message, prior_attempts) -> str` and `FEW_SHOT_EXAMPLES` as real exercise deliverables; `extract_refund_request` now passes the constructed prompt (not the raw message) to `model_client`. Required zero changes to the original 7 tests.
+- Test suite grew from 7 to 14 tests, closing an asserted-but-untested `"other"`-requires-detail rule, unvalidated `confidence`/type checks, a loose exhaustion-count assertion, an unchecked `prior_attempts` contract field, and adding direct tests that the prompt/few-shot artifacts exist and that a retry prompt literally embeds the specific prior error.
+- Fixed a real technical-precision issue in the checkpoint (Q5's `tool_use` guarantee claim, found via Codex's live doc search) and a real mental-model imprecision (Q11's "same model instance" framing).
+- Fixed a self-contradiction in the README (an attempt called a "valid alternate terminal" that actually fails the stop condition).
+- Documented the Python 3.9+ requirement and added an explicit, evidenced ARB-trigger-check-N/A line to `grading.md`, closing a Coachgremlin-checklist gap Codex caught (the reasoning existed but was never written down).
+- Added a 4th dry-run attempt (`weak-few-shot-attempt`): passes all 14 tests with only clean, textbook-only few-shot examples — real, constructed evidence rubric criterion 3 catches what the deterministic suite structurally can't.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 doubt-driven-development entries for Module 02.
+
+### Assumptions
+
+Rubric criterion 4 (documented nullable-field rationale) still has no dry-run attempt isolating it specifically. Logged in `docs/next-actions.md`.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Module 03, both tiers together, doubt-driven-development before done — now the standing practice for every module. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_02.py` re-run against all 4 constructed attempts plus the cumulative-gate isolation check after the interface change — all match expectations.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.

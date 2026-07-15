@@ -21,7 +21,7 @@ Each module's checker is the *only* thing a later module may assume from an arbi
 | # | Module | Capability | Status |
 |---|---|---|---|
 | 01 | Configuring Claude Code for Real Work | Full Claude Code configuration for this project: CLAUDE.md hierarchy, path-scoped rules, a project slash command, CI-mode readiness | **Deterministic tier authored and dry-run validated** (`runs/2026-07-14-module-01-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/01-configuring-claude-code/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
-| 02 | Prompts and Structured Output That Survive Production | Structured extraction for refund amounts/escalation reasons from freeform customer messages | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-02-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/02-prompts-structured-output/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
+| 02 | Prompts and Structured Output That Survive Production | Structured extraction for refund amounts/escalation reasons from freeform customer messages | Not started |
 | 03 | Designing Tools and MCP Interfaces | Real implementations of `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human` as MCP tools with structured error responses | Not started |
 | 04 | Agentic Loops and Multi-Agent Orchestration | The coordinator agent (`src/agent.py`): the real agentic loop calling the Module 03 tools, with a programmatic hook enforcing verify-before-refund | Not started |
 | 05 | Context and Reliability at Scale | Context handling across a long, multi-issue support session (case-facts extraction, escalation handoff summaries) | Not started |
@@ -50,25 +50,8 @@ Configure Claude Code for this project for real production team use, not a toy d
 
 See `runs/2026-07-14-module-01-dry-run/` for the real dry run and its finding, and `modules/01-configuring-claude-code/README.md` for the full rubric.
 
-## Module 02: structured extraction
-
-### What's already here
-
-- `src/extraction.py` — `extract_refund_request`, `build_extraction_prompt`, both stubbed `raise NotImplementedError`; `FEW_SHOT_EXAMPLES` stubbed empty. The schema types (`ExtractionResult`, `REASON_CATEGORIES`, `ExtractionFailed`) and the `ModelClient` injection point are already declared. **Requires Python 3.9+.**
-- `tests/test_extraction.py` — a real, provided pytest suite (14 tests), not a placeholder. This is the deterministic gate for this module, the same role `tests/test_tools.py`'s real content plays once Module 03 lands.
-
-### The exercise (see `modules/02-prompts-structured-output/README.md` for the full rubric)
-
-Implement `build_extraction_prompt` (states the schema explicitly, embeds `FEW_SHOT_EXAMPLES`, embeds the specific prior validation error on retry), `FEW_SHOT_EXAMPLES` (at least 2 examples, at least one genuinely ambiguous), and `extract_refund_request` (validates the model's raw response against the schema, retries with the specific validation error fed back, raises `ExtractionFailed` rather than fabricate a result after exhausting retries). `max_retries` defaults to 2.
-
-### The actual point of this exercise
-
-See `runs/2026-07-15-module-02-dry-run/` for the real dry run and its findings (a subtle `or 0` bug that fabricates a refund amount, caught by exactly one test; a structural gap where the original exercise interface never required a prompt/few-shot artifact at all, found and fixed by a doubt-driven-development review the same day), and `modules/02-prompts-structured-output/README.md` for the full rubric.
-
 ## Running it
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # first time only
-python3 scripts/verify_module_01.py fixtures/resolve   # from repo root
-python3 scripts/verify_module_02.py fixtures/resolve   # chains Module 01's check, then runs tests/test_extraction.py
+python3 scripts/verify_module_01.py fixtures/resolve   # from repo root; see that script for what it checks
 ```
