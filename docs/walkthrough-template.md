@@ -1,7 +1,7 @@
 # Walkthrough: {Session Title}
 
 **Date:** YYYY-MM-DD
-**Project:** Claude Cert Workshop
+**Project:** Closed Book
 **Prompt / Session:** N
 
 ## What changed in plain English
@@ -10,7 +10,7 @@
 
 ## The simple analogy
 
-## How this ties to Claude Cert Workshop
+## How this ties to Closed Book
 
 ## How this ties to the Hekton factory vision
 

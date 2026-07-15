@@ -1,0 +1,121 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../components/layout/BaseLayout.astro";
+
+const REPO = "https://github.com/coderturtle/closed-book";
+const base = import.meta.env.BASE_URL;
+
+const recentEntries = (await getCollection("buildlog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="Closed Book: guide"
+  description="Build it with Claude. Prove you don't need Claude to pass."
+>
+  <h1 class="text-3xl font-bold">Closed Book</h1>
+  <p class="mt-2 text-lg opacity-80">
+    Build it with Claude. Prove you don't need Claude to pass.
+  </p>
+
+  <div class="post-body mt-10">
+    <p>
+      This page is orientation for anyone landing on the deployed site rather than the repo
+      directly. The workshop itself, ten modules building toward Anthropic's real Claude
+      Certified Architect exams, lives in the <a href={REPO}>repo</a>, whose own README covers
+      the same ground in more detail once you've cloned it.
+    </p>
+
+    <h2>Two gates, not one, deliberately in tension</h2>
+    <p>
+      Every module's core exercise is built hands-on through your own Claude Code session: a
+      real agentic loop, a designed MCP tool, a CLAUDE.md hierarchy, whatever that module's
+      exam domain actually asks a practitioner to build. Then, before moving on, you{" "}
+      <strong>close the session</strong> and take a timed, closed-book practice checkpoint,
+      no AI, no notes, because that's the one condition under which Anthropic's real exam
+      actually happens. Neither tier substitutes for the other.
+    </p>
+
+    <h2>Anchored to Anthropic's own published exam guides, not third-party summaries</h2>
+    <p>
+      This workshop's module arc is built directly from Anthropic's own <em>Claude Certified
+      Architect – Foundations</em> and <em>– Professional</em> exam guide PDFs (fetched and
+      read in full, not summarized from secondary sources; an early research pass found several
+      third-party "exam prep" sites recycling identical, unreliable domain lists across
+      different exam pages). See the repo's <code>docs/workshop-design.md</code> for the full
+      research this arc is grounded in.
+    </p>
+
+    <h2>What you walk away with</h2>
+    <p>
+      Two different things get built during each module: your own judgment, and a reusable
+      artifact you keep. See each module's own README (once authored) for the evidence behind
+      its specific gate.
+    </p>
+    <ul>
+      <li>
+        <strong>You</strong> get practiced judgment: recalling why a design choice is correct
+        without a tool doing the reasoning for you, which is a rehearsed skill this workshop
+        treats as separate from simply knowing the material.
+      </li>
+      <li>
+        <strong>You keep</strong> packaged takeaways: a CLAUDE.md starter kit, a coordinator-
+        subagent reference implementation, a context-degradation diagnostic playbook, an
+        architecture-decision-record template, an evaluation harness template, a governance
+        checklist, and two personal exam-day prep sheets, one per real exam.
+      </li>
+    </ul>
+
+    <h2>The runbook</h2>
+    <ol>
+      <li>
+        Prerequisites: comfortable with git, the CLI, and driving Claude Code daily for real
+        work; new to the certification's own blueprint specifically, not to Claude itself.
+      </li>
+      <li>
+        Clone it: <code>git clone {REPO}.git</code>
+      </li>
+      <li>
+        Start at <code>modules/README.md</code>. It has the full arc, in order, and a table of
+        what each module's gate requires and what you keep from it.
+      </li>
+      <li>
+        Work through Part 1 (Modules 01-06, Architect Foundations), then, if you're continuing,
+        Part 2 (Modules 07-10, Architect Professional). Each module states a hard prerequisite
+        on an earlier one.
+      </li>
+      <li>
+        No module completes by reading it, and no checkpoint counts if you keep Claude Code
+        open while taking it. If a module ever reduces to "read this, then move on," or a link
+        here is broken, that's a defect: <a href={`${REPO}/issues`}>open an issue</a>.
+      </li>
+    </ol>
+
+    <p>
+      This workshop is not affiliated with or endorsed by Anthropic, does not guarantee you'll
+      pass the real exam, and completing it does not itself credential anything.
+    </p>
+  </div>
+
+  {
+    recentEntries.length > 0 && (
+      <>
+        <h2 class="mt-14 text-xl font-semibold">Recent from the build log</h2>
+        <ul class="mt-6 space-y-4">
+          {recentEntries.map((entry) => (
+            <li>
+              <a href={`${base}build-log/${entry.id}/`} class="entry-card">
+                <p class="entry-title text-lg font-semibold">{entry.data.title}</p>
+                <p class="mt-1 text-sm opacity-80">{entry.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 text-sm opacity-70">
+          See the <a href={`${base}build-log/`} class="underline">full index</a>.
+        </p>
+      </>
+    )
+  }
+</BaseLayout>

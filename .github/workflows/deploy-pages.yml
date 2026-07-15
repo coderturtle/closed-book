@@ -1,0 +1,68 @@
+name: Deploy build log to GitHub Pages
+
+# Human Gate: first deploy is workflow_dispatch-only, run on explicit human confirmation.
+# Once that first deploy is confirmed working, uncomment the push trigger below so
+# subsequent build-log updates auto-publish.
+on:
+  workflow_dispatch: {}
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "site/**"
+  #     - "docs/build-log/**"
+  #     - ".github/workflows/deploy-pages.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: site
+
+      - name: Build site
+        run: npm run build
+        working-directory: site
+
+      # Default GitHub Pages project hosting (coderturtle.github.io/closed-book/),
+      # no custom domain for this workshop - unlike terminal-velocity's later cutover
+      # to terminal-velocity.coderturtle.io, which needed a real Route53 change via
+      # agentic-infra-lab. Pages enablement itself is still a one-time, human-run step
+      # (Settings > Pages > Source: GitHub Actions) before the first dispatch succeeds.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

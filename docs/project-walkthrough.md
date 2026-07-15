@@ -1,4 +1,4 @@
-# Claude Cert Workshop — Plain-English Project Walkthrough
+# Closed Book — Plain-English Project Walkthrough
 
 ## What this project is in one paragraph
 

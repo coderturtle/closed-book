@@ -1,4 +1,4 @@
-# Operating Model: Claude Cert Workshop
+# Operating Model: Closed Book
 
 ## Classification
 

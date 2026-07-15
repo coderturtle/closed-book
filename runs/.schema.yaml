@@ -1,15 +1,15 @@
 # Machine-readable run ledger schema.
 # Read by hekton-status and cross-project dashboard aggregators.
-# Scaffolded 2026-07-14 — run standardise-runs-ledger.py --project claude-cert-workshop --force to enrich.
+# Scaffolded 2026-07-14 — run standardise-runs-ledger.py --project closed-book --force to enrich.
 schema_version: "1"
-project: claude-cert-workshop
+project: closed-book
 project_type: factory-output
 id_prefix: CCW
 task_types:
   - task
   - review
   - session
-run_description: "A unit of work in Claude Cert Workshop that produces a traceable result requiring human review."
+run_description: "A unit of work in Closed Book that produces a traceable result requiring human review."
 fields:
   run_id: string
   project: string

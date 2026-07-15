@@ -1,4 +1,4 @@
-# Retire / Promote Review: Claude Cert Workshop
+# Retire / Promote Review: Closed Book
 
 Review default: factory output does not automatically promote to platform, but learnings may become templates or platform backlog.
 

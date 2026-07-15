@@ -11,3 +11,4 @@ dist/
 build/
 *.bak.*
 .project-setup/
+site/.astro/

@@ -1,10 +1,10 @@
-# AGENTS.md — Claude Cert Workshop
+# AGENTS.md — Closed Book
 
 ## Project Classification
 
 - **Type:** factory-output
-- **Local repo:** /Users/hekton/Development/hekton/factory-output/claude-cert-workshop
-- **Vault:** /Users/hekton/vaults/hekton-mind-palace/20-projects/factory-output/claude-cert-workshop
+- **Local repo:** /Users/hekton/Development/hekton/factory-output/closed-book
+- **Vault:** /Users/hekton/vaults/hekton-mind-palace/20-projects/factory-output/closed-book
 - **Vault mutation allowed:** see `vault_mutation_allowed` in `.hekton/project.yaml` (authoritative)
 - **Owner:** coderturtle
 
@@ -16,7 +16,7 @@ This project is classified as **factory-output**. All agents must:
 1. Work on a short-lived `agent/<agent-name>/<task-slug>` branch and never commit directly to `main`/`master` — see `~/hekton/.rules/git-contract.md`
 2. Read `.hekton/project.yaml` before making structural changes
 3. Read `docs/project-walkthrough.md` before structural changes
-4. Stay within `/Users/hekton/Development/hekton/factory-output/claude-cert-workshop` for code changes
+4. Stay within `/Users/hekton/Development/hekton/factory-output/closed-book` for code changes
 5. Update `docs/decisions.md` for any significant design decisions
 6. Append to `docs/session-log.md` at end of every session
 7. Update `docs/next-actions.md` when the work queue changes

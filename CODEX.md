@@ -1,11 +1,11 @@
-# CODEX.md — Claude Cert Workshop
+# CODEX.md — Closed Book
 
 ## Project Classification
 
 - **Type:** factory-output
-- **Name:** claude-cert-workshop
-- **Local repo:** /Users/hekton/Development/hekton/factory-output/claude-cert-workshop
-- **Vault control plane:** /Users/hekton/vaults/hekton-mind-palace/20-projects/factory-output/claude-cert-workshop
+- **Name:** closed-book
+- **Local repo:** /Users/hekton/Development/hekton/factory-output/closed-book
+- **Vault control plane:** /Users/hekton/vaults/hekton-mind-palace/20-projects/factory-output/closed-book
 - **Lifecycle stage:** active
 - **Promotion target:** none
 - **Privacy boundary:** public
