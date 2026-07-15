@@ -4,9 +4,11 @@ Closed Book's spine is Anthropic's own Claude Certification Program blueprint, i
 
 Every module's core exercise is built hands-on through Claude Code, then checked closed-book (no AI, no notes) against a practice checkpoint modeled on the exam's own blueprint and sample-question style — never copied from the real exam or Anthropic's own official sample questions. See the top-level README, [`docs/workshop-design.md`](../docs/workshop-design.md), and [`docs/design-tension.md`](../docs/design-tension.md) for the full thesis and the named tension between the two.
 
+Part 1's modules (01-06) all build one real shared project, `resolve`, a customer support resolution agent modeled directly on CCA-F's own Scenario 1 — see [`fixtures/resolve/SPEC.md`](../fixtures/resolve/SPEC.md) for the full spec and build-out table.
+
 **Hands-on by design, not passive text.** No module here completes by reading it. Every module states a required gate: a real artifact plus an observed closed-book checkpoint. Every gate also has a stated **takeaway**: you keep something reusable, not just proof you did the exercise.
 
-> **Content status: skeleton only.** Every module below is structure, not content — the question, arc position, gate shape, and takeaway shape are decided; the actual exercise, fixture, and closed-book question bank are Coachgremlin's job, run later, one module at a time, per the Workshop Gremlin's own Completion Condition (it stops before content exists). Don't expect a working exercise yet.
+> **Content status: Module 01 is real, Modules 02-10 are skeleton.** [Module 01, Configuring Claude Code for Real Work](01-configuring-claude-code/README.md) has a working exercise, a real deterministic checker (`scripts/verify-module-01.sh`), and a completed dry run (`runs/2026-07-14-module-01-dry-run/grading.md`) you can run today. The rest have a decided question, gate shape, and takeaway shape, but no authored exercise yet.
 
 ## Part 1 — Architect Foundations (CCA-F)
 

@@ -6,32 +6,43 @@ How do you configure Claude Code so it works the way your team needs, not the wa
 
 ## Where it sits in the arc
 
-First module. No prior module: this is day-one harness fluency, assumed by every later module rather than taught by any of them again. Next: [Module 02, Prompts and Structured Output That Survive Production](../02-prompts-structured-output/README.md) — the hinge is that Module 02's exercises are *delivered through* the Claude Code configuration this module builds. See [`modules/README.md`](../README.md) for the full arc and why this order.
+First module. No prior module: this is day-one harness fluency, assumed by every later module rather than taught by any of them again. Next: [Module 02, Prompts and Structured Output That Survive Production](../02-prompts-structured-output/README.md) — the hinge is that Module 02's exercises are *delivered through* the Claude Code configuration this module builds. See [`modules/README.md`](../README.md) for the full arc.
 
-## Learning objectives (placeholder — finalized when content is authored)
+## Exercise: configure `resolve`
 
-- Diagnose a configuration-hierarchy bug (e.g. a teammate not receiving project instructions because they landed in user-level, not project-level, config).
-- Choose correctly between a `.claude/rules/` path-scoped file and a subdirectory `CLAUDE.md` for a given convention.
-- Decide when a task needs plan mode versus direct execution, and defend the call.
-- Wire Claude Code into a non-interactive CI context without it hanging on interactive input.
+Runs against `fixtures/resolve/`, the one shared project every module in Part 1 of this workshop builds a real capability onto (see that directory's `SPEC.md` for the full spec and the module-by-module build-out table). `resolve` is a customer support resolution agent, modeled directly on CCA-F's own Scenario 1: it handles returns, billing disputes, and account issues, backed by MCP tools (`get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`), with one non-negotiable safety rule: `process_refund` must never fire before `get_customer` has returned a verified customer ID.
 
-## Exercise material to draw from (not a spec — Coachgremlin authors the real exercise later)
+`fixtures/resolve/` ships with a real but incomplete codebase (four stub MCP tools, a stub agent, a placeholder test file) — your job in this module isn't to implement any of that code. It's to configure Claude Code for it, for real production team use:
 
-Real material this module's exercise should be built from: CCA-F Exam Guide Domain 3 (Claude Code Configuration & Workflows), Task Statements 3.1–3.6 — CLAUDE.md hierarchy/`@import`/`.claude/rules/`, custom slash commands and skills (`context: fork`, `allowed-tools`, `argument-hint`), path-specific rules, plan mode vs. direct execution, iterative refinement techniques, and CI/CD integration (`-p`/`--print`, `--output-format json`). The guide's own Exercise 2 ("Configure Claude Code for a Team Development Workflow") is a real, usable starting shape — see [`docs/workshop-design.md`](../../docs/workshop-design.md)'s curriculum-anchor section for the full research this arc is grounded in.
+1. A project-root `CLAUDE.md` with real project context and the safety rule stated plainly.
+2. At least one path-scoped `.claude/rules/` file whose glob pattern actually matches real files under the project — not just present, *scoped to something real*.
+3. At least one project-scoped slash command in `.claude/commands/`.
 
-## Required gate (placeholder — shape decided now, real rubric written later)
+Get `scripts/verify-module-01.sh` (run from the repo root, pointed at your attempt) to pass, from your own harness, without narrating the fix as you go, then check it against the rubric below.
 
-- **Deterministic tier (hands-on, with Claude Code):** a real, working configuration artifact — a multi-level CLAUDE.md hierarchy, at least one `.claude/rules/` file with correct glob scoping, and one project-scoped skill or slash command — built for a real (not toy) project, verified to actually load and apply as intended.
-- **Exam-condition tier (closed-book, without Claude Code):** a timed multiple-choice checkpoint against Domain 3's task statements, written originally in the exam's own scenario-based style. Default format: 10–15 questions, 15–20 minutes, 80% to pass (see [`docs/workshop-design.md`](../../docs/workshop-design.md) for the workshop-wide default and the suggested closed-book ritual).
+## Rubric
+
+1. **`scripts/verify-module-01.sh` exits 0 against your configuration (gate, deterministic).** Checks structure exists and that any path-scoped rule's glob actually resolves against real files in the project — a rules file that exists but matches nothing is treated as equivalent to having none.
+2. **Every convention that applies to only part of the project lives in a path-scoped `.claude/rules/` file, not the project-root `CLAUDE.md` (scored, conceptual).** The root file states what's true everywhere; anything true only of `src/tools/**` or `tests/**` belongs in its own scoped file.
+3. **A teammate cloning this repo cold can find the safety-critical rule (verify-before-refund) without reading every file in the project (scored, conceptual).** Where that rule lives, and how prominently, is a real design choice this module tests directly.
+4. **The project-scoped slash command does something a real contributor to this specific project would actually reach for**, not a generic placeholder (scored, conceptual).
+
+**Before trusting a green `scripts/verify-module-01.sh` as proof you're done:** it is not the same claim as "this configuration is genuinely well-structured." A configuration that technically satisfies every mechanical check (a rules file exists, its glob matches something) can still bury the safety rule, misuse the slash command, or split conventions along the wrong boundary. This isn't hypothetical: this exercise's own dry run (`runs/2026-07-14-module-01-dry-run/grading.md`) found a genuinely plausible, content-correct attempt that failed the deterministic tier entirely (a single monolithic `CLAUDE.md`, structurally wrong despite accurate content) — and, separately, that the checker script itself had a real bug (a glob pattern that silently never matched anything without `globstar` enabled) until the dry run caught it. Criteria 2-4 exist because criterion 1 provably can't catch a configuration that's mechanically present but conceptually thin.
+
+## Required to advance / stop condition
+
+Produce a Claude Code configuration for `fixtures/resolve/` that passes `scripts/verify-module-01.sh` and demonstrates all three scored criteria above. Reading this page does not count: advancement requires a working, checker-verified attempt Coachgremlin has actually reviewed against the rubric, not on having read it.
+
+**Valid alternate terminal:** if your first attempt puts everything in one root `CLAUDE.md` (the naive attempt this module's dry run constructed), that's not a failure, it's the actual exercise. Go back and ask: which of these conventions is true of the *whole* project, and which is only true when someone's editing a specific area? Split accordingly.
+
+## Before you start: a non-scored self-check
+
+Before running `scripts/verify-module-01.sh` for the first time, predict its output without looking at the script's source: which of your files do you expect to pass, which do you expect to fail, and why? Write the prediction down, then run the check and compare. This isn't graded — it's a habit for noticing whether *you* understood the configuration hierarchy, or whether your agent produced something that happens to look right. See `.claude/skills/agentic-learning-discipline/SKILL.md` (packaged once a learner completes this module) for why this matters more here than it might seem: Claude Code can produce a plausible-looking `.claude/rules/` file in one paste, whether or not the person asking for it understands why the split matters.
 
 ## Takeaway
 
-A personal CLAUDE.md/rules/skills starter kit, structured the way the exam blueprint expects (hierarchy, path-scoping, frontmatter options) — built from real configuration decisions made during the exercise, not copied from documentation. Packaged by Coachgremlin once the rubric is met.
-
-## Stop condition (placeholder)
-
-The learner's configuration artifact is real, verified to load correctly, and Coachgremlin confirms the closed-book checkpoint was passed at 80%+ under real exam conditions (no Claude, no notes). Reading this page does not count: advancement requires both tiers actually observed, not just attempted.
+A personal CLAUDE.md/rules/skills starter kit, structured the way the exam blueprint expects (hierarchy, path-scoping, frontmatter options) — built from your own configuration decisions on `resolve`, not copied from documentation.
 
 ---
 
-> **Skeleton only.** This module has a decided question, arc position, gate shape, and takeaway shape. It has no authored exercise, fixture, or closed-book question bank yet — that's Coachgremlin's job, run later, per the Workshop Gremlin's Completion Condition (it stops before content exists). See [`modules/README.md`](../README.md) for workshop-wide status.
+*Module content authored 2026-07-14. Dry run complete: `runs/2026-07-14-module-01-dry-run/grading.md`.*

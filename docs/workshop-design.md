@@ -30,6 +30,12 @@ Self-paced, public repo. Matches Terminal Velocity's and Borrow Native's precede
 - **Subject:** the Claude Certification Program's Architect track — Foundations (5 domains) then Professional (7 domains), per Anthropic's own published blueprints.
 - **Method:** agent-native *and* exam-native at once, deliberately in tension (see `docs/design-tension.md`): every module's core exercise is built hands-on through Claude Code, then checked against a closed-book, no-AI practice quiz that simulates the real exam's own conditions.
 
+## The shared project: `resolve`
+
+Added 2026-07-15, at coderturtle's direction, before Module 01's content was authored. Part 1 (Modules 01-06) builds one real project across the arc rather than independent per-module fixtures: `resolve`, a customer support resolution agent modeled directly on CCA-F's own Scenario 1 (`get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`, targeting 80%+ first-contact resolution with a hard escalate-when-unsure rule). By Module 06's capstone, a learner has a real, working agent, not six disconnected snippets — same shape Borrow Native adopted for its own arc, and for a similar reason: CCA-F's five domains are additive toward one real system, not five different lenses on one problem the way Terminal Velocity's subject was. Full spec and module-by-module build-out table: `fixtures/resolve/SPEC.md`.
+
+Part 2 (Modules 07-10) does not extend `resolve` directly — Professional-level work (solution design, evaluation, governance) operates one level up from a single system's implementation, closer to reviewing/extending a Claude-based solution generally than adding one more feature to one fixture. Whether Part 2 needs its own shared artifact (e.g. a written architecture proposal carried across Modules 07-09) is an open question for whoever authors that content, not decided here.
+
 ## The teaching method: two-tier gate
 
 Every module's gate has two required parts, per coderturtle's explicit design decision:

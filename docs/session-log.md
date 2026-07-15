@@ -55,3 +55,40 @@ Locally validated only: `npm run build` and `astro check` both clean in `site/`.
 ### Mind-palace updated
 
 Yes — vault card renamed to match (`claude-cert-workshop` → `closed-book`), explicitly authorized. Repo-local mirror renamed in the same commit as the repo rename.
+
+## 2026-07-15 - PR merged; Coachgremlin's first content pass (Module 01)
+
+PR #1 merged to `main` (all Workshop Gremlin roster work). Moved to the Learn phase: Coachgremlin authored Module 01 for real.
+
+### What changed
+
+- Decided Modules 01-06 build one shared project (`fixtures/resolve/`, a customer support resolution agent modeled on CCA-F's own Scenario 1) rather than independent fixtures, at coderturtle's direction.
+- Authored `fixtures/resolve/SPEC.md` and the project skeleton (4 stub MCP tools, a stub coordinator agent, a placeholder test file).
+- Authored Module 01's real exercise + rubric (property-phrased conceptual criteria, per Coachgremlin's rubric-spoiler-tension discipline), replacing the skeleton placeholder.
+- Wrote `scripts/verify-module-01.sh`, a real deterministic checker for Claude Code configuration structure.
+- Ran a real dry run (`runs/2026-07-14-module-01-dry-run/`): 3 constructed attempts (naive, correct, broken-glob). The checker discriminated correctly across all three, and the dry run caught a real bug in the checker itself (a missing `shopt -s globstar`) before it could produce a false negative against a genuinely correct attempt.
+- Adapted Borrow Native's `agentic-learning-discipline` Skill for Closed Book's own sharper version of the tension (the real exam forbids the very agent the hands-on tier is built around).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 entries.
+
+### Assumptions
+
+The two-tier gate's conceptual tier hasn't been validated the way the deterministic tier has — no constructed attempt yet tests "passes the checker but is conceptually weak." Logged in `docs/next-actions.md`.
+
+### Risks
+
+No new risks this session beyond what's already in `docs/risks.md`.
+
+### Next Actions
+
+Module 02 (Prompts and Structured Output), continuing `resolve`. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify-module-01.sh` run against all 3 dry-run attempts, correct results confirmed (see `runs/2026-07-14-module-01-dry-run/grading.md`). No real learner attempt yet — only self-constructed dry runs.
+
+### Mind-palace updated
+
+Not this session — no structural rename or vault-card change occurred.
