@@ -19,5 +19,11 @@
 | 2026-07-15 | Doubt-driven-development review of Module 02 (Claude + Codex + Fable) | Dominant finding: the exercise interface never required the prompt/few-shot artifact 2 rubric criteria graded. |
 | 2026-07-15 | Structural fix: changed the exercise interface, not the rubric | Added build_extraction_prompt/FEW_SHOT_EXAMPLES as real deliverables; zero changes needed to the original 7 tests. |
 | 2026-07-15 | Remaining remediation: test suite grew 7->14, checkpoint precision fixes, 4th dry-run attempt | 4th attempt (weak-few-shot) passes all 14 tests while failing rubric criterion 3 — closes the conceptual-tier validation gap. |
+| 2026-07-15 | Module 03 authored (4 MCP tools), both tiers together, lessons applied proactively | Real bug found and fixed before grading: tool descriptions were module-level docstrings, not the function's own `__doc__`. |
+| 2026-07-15 | Dry run constructed 2 attempts closing the conceptual-tier gap proactively | `trusts-caller-attempt` (skips re-verification) and `weak-docstring-attempt` (passes tests, no real boundary reasoning). |
+| 2026-07-15 | Doubt-driven-development review of Module 03 (Claude + Codex + Fable) found the checker chain was broken and trusted learner-editable test files | Two structural issues worse than either prior module's review, both fixed same day. |
+| 2026-07-15 | Fixed: unified check_module_NN interface + canonical-test execution (checkers now run the repo's own test file, not the submission's copy) | Verified empirically a tampered test file no longer helps a broken submission pass. Applied retroactively to Module 02's checker too. |
+| 2026-07-15 | Fixed: canonical-test execution applied retroactively to Module 02's checker too | Same trust-boundary hole existed there; verified a tampered test file no longer helps either module's broken submissions pass. |
+| 2026-07-15 | Remaining Module 03 remediation: test suite grew 16->20, ordering test, error-category semantics documented | Closes the gap between claimed and actual docstring coverage; makes the safety property a real gate, not prose. |
 
 Full ADR log with rationale detail: repo `docs/decisions.md`.
