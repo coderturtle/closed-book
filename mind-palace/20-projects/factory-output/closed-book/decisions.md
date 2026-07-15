@@ -14,5 +14,6 @@
 | 2026-07-15 | Module 01 authored for real, with a completed dry run | Deterministic checker validated against 3 constructed attempts; caught a real bug in itself. |
 | 2026-07-15 | Doubt-driven-development review of Module 01 (Claude + Codex + Fable) | Found the closed-book tier didn't exist, checker had real bugs, rubric violated its own rules. |
 | 2026-07-15 | Full remediation: checkpoint authored, checker rewritten in Python, compatibility contract added | 4th dry-run attempt confirms the conceptual tier catches what the deterministic tier structurally can't. |
+| 2026-07-15 | Module 02 authored, both tiers together; doubt-driven-development review found the exercise interface didn't require a prompt artifact | Fixed by adding build_extraction_prompt/FEW_SHOT_EXAMPLES as real deliverables, not by weakening the rubric. Test suite grew 7->14; 4th dry-run attempt closes the same conceptual-tier validation gap Module 01's did. |
 
 Full ADR log with rationale detail: repo `docs/decisions.md`.
