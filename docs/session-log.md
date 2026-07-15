@@ -92,3 +92,42 @@ Module 02 (Prompts and Structured Output), continuing `resolve`. See `docs/next-
 ### Mind-palace updated
 
 Not this session — no structural rename or vault-card change occurred.
+
+## 2026-07-15 (cont'd) - Doubt-driven-development review and remediation of Module 01
+
+Before treating Module 01 as done, ran a doubt-driven-development pass at the user's request: a fresh-context Claude subagent and Codex CLI (both given ARTIFACT+CONTRACT only, sandboxed read-only for Codex), plus a Fable-model subagent tasked with critiquing and replanning given both reviews' findings.
+
+### What changed
+
+- Both adversarial reviews found substantial, largely non-overlapping, mostly-corroborated real issues — not doubt theater. Full reconciliation in `docs/decisions.md`'s 2026-07-15 entries.
+- Headline finding (Codex): the closed-book checkpoint tier — this workshop's namesake feature — had never been authored for any module. Fixed: `modules/01-configuring-claude-code/checkpoint.md`, 12 originally-written questions, full CCA-F Domain 3 coverage.
+- Rewrote `scripts/verify-module-01.sh` as `scripts/verify_module_01.py`, closing several real bugs structurally (non-portable `globstar`, quoted-only YAML matching, weak scoping check, no path-escape protection). Found and fixed a further bug in the rewrite itself during re-verification (a false-positive match against `SPEC.md`'s own requirement description).
+- Added `fixtures/resolve/SPEC.md`'s compatibility contract and cumulative-gate convention, addressing the coupling/regression risk both reviews flagged.
+- Reconciled a real self-inconsistency: rubric criterion 2 named its own technique, violating this workshop's stated property-phrasing rule (Codex's finding, independently real).
+- Reconciled a competing-safety-rule contradiction between `workshop-design.md` and Module 01's README.
+- Added a 4th dry-run attempt (`weak-conceptual-attempt`) that passes the deterministic tier completely while failing the conceptual criteria — real, constructed evidence the two-tier design's conceptual half catches something the deterministic half structurally cannot.
+- Fixed `CLAUDE.md`'s unconditional session-closeout instruction, which caused Codex's read-only review agent to attempt running the closeout script mid-review (failed safely under the read-only sandbox, but the instruction itself was a real bug, not just a review artifact).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 doubt-driven-development entries.
+
+### Assumptions
+
+None of this changes the workshop's largest remaining assumption: no real learner has attempted any of it yet.
+
+### Risks
+
+RISK-0003 (honor-system closed-book checkpoints) is now partially addressed by the checkpoint itself existing and stating an explicit pre-checkpoint ritual; the underlying honor-system limitation is unchanged and still accepted, not solved.
+
+### Next Actions
+
+Module 02, authoring both tiers together this time. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_01.py` run against all 4 dry-run attempts (naive/correct/broken-glob/weak-conceptual), results match expectations. Closed-book checkpoint content has not been attempted by anyone, including in a dry-run sense (no mechanism exists yet to "dry run" a closed-book quiz the way a deterministic checker can be dry-run).
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR, per this repo's own established discipline.
