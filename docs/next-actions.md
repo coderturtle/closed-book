@@ -9,9 +9,14 @@
 - [x] Author Module 01's closed-book checkpoint (`checkpoint.md`, 12 questions, full Domain 3 coverage) — done 2026-07-15, was previously missing entirely
 - [x] Rewrite `verify_module_01.py` in Python, fixing portability/scoping/path-escape bugs — done 2026-07-15
 - [x] A fourth dry-run attempt for Module 01 that passes the deterministic tier but is conceptually weak — done 2026-07-15 (`weak-conceptual-attempt`), confirms rubric criteria 2-4 catch what the checker structurally can't
-- [ ] Coachgremlin: author Module 02 (Prompts and Structured Output), continuing the `resolve` project. **Author both tiers together this time** — Module 01's biggest finding was building the hands-on tier alone and treating that as "done."
+- [x] Coachgremlin: author Module 02 (Prompts and Structured Output), continuing the `resolve` project — done 2026-07-15, both tiers built together from the start this time.
+- [x] Wire the cumulative-gate convention for real (`verify_module_02.py` imports and calls `check_module_01`) — done 2026-07-15, isolation-tested (fails correctly when Module 01's config is absent, before pytest even runs).
+- [x] Doubt-driven-development review of Module 02 (fresh Claude subagent + Codex with live web search + Fable replan) — done 2026-07-15. Dominant finding: the exercise interface never actually required the prompt/few-shot artifact 2 rubric criteria graded. Fixed by adding `build_extraction_prompt`/`FEW_SHOT_EXAMPLES` as real exercise deliverables, not by weakening the rubric. Full record in `docs/decisions.md`.
+- [x] A 4th dry-run attempt for Module 02 that passes the full test suite but is conceptually weak — done 2026-07-15 (`weak-few-shot-attempt`, clean-only few-shot examples), confirms rubric criterion 3 catches what the 14-test deterministic suite structurally can't.
+- [ ] Module 02 rubric criterion 4 (documented reason `refund_amount_cents` is nullable) still has no constructed dry-run attempt that isolates it in particular — logged in `runs/2026-07-15-module-02-dry-run/grading.md`'s "not yet validated" note.
+- [ ] Coachgremlin: author Module 03 (Designing Tools and MCP Interfaces), continuing `resolve` — both tiers together, and run doubt-driven-development before treating it as done, now the standing practice for every module.
 - [ ] A real learner (not just constructed attempts) needed before this workshop's two-tier gate hypothesis has any evidence beyond self-constructed dry runs
-- [ ] Once Module 02 exists, wire the cumulative-gate convention for real (`verify_module_02.py` imports and calls `check_module_01`), per `fixtures/resolve/SPEC.md`'s compatibility contract
+- [ ] `fixtures/resolve/requirements.txt` (pytest) has no documented venv-setup step in the module READMEs yet beyond `SPEC.md`'s "Running it" section — consider whether this belongs in the top-level README's prerequisites too, before Module 03 adds more dependencies
 
 ## This Week
 

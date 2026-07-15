@@ -14,5 +14,10 @@
 | 2026-07-15 | Module 01 authored for real, with a completed dry run | Deterministic checker validated against 3 constructed attempts; caught a real bug in itself. |
 | 2026-07-15 | Doubt-driven-development review of Module 01 (Claude + Codex + Fable) | Found the closed-book tier didn't exist, checker had real bugs, rubric violated its own rules. |
 | 2026-07-15 | Full remediation: checkpoint authored, checker rewritten in Python, compatibility contract added | 4th dry-run attempt confirms the conceptual tier catches what the deterministic tier structurally can't. |
+| 2026-07-15 | Module 02 authored, both tiers together from the start | Deterministic tier: real pytest suite against a learner-implemented extraction.py, chaining Module 01's checker (cumulative gate). |
+| 2026-07-15 | Dry run constructed 2 differently-shaped naive attempts | A broadly-failing no-retry attempt and a narrowly-failing fabrication bug (`or 0` collapsing an honest None). |
+| 2026-07-15 | Doubt-driven-development review of Module 02 (Claude + Codex + Fable) | Dominant finding: the exercise interface never required the prompt/few-shot artifact 2 rubric criteria graded. |
+| 2026-07-15 | Structural fix: changed the exercise interface, not the rubric | Added build_extraction_prompt/FEW_SHOT_EXAMPLES as real deliverables; zero changes needed to the original 7 tests. |
+| 2026-07-15 | Remaining remediation: test suite grew 7->14, checkpoint precision fixes, 4th dry-run attempt | 4th attempt (weak-few-shot) passes all 14 tests while failing rubric criterion 3 — closes the conceptual-tier validation gap. |
 
 Full ADR log with rationale detail: repo `docs/decisions.md`.
