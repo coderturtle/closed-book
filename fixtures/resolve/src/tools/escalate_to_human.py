@@ -12,5 +12,15 @@ def escalate_to_human(customer_id: str, reason: str, summary: dict, backend: Bac
     missing either is a validation error, not a best-effort handoff, since a
     human with half the picture makes a worse decision than one who was
     never assigned the case at all.
+
+    Deliberately different from process_refund: this tool does NOT require
+    `customer_id` to resolve via `backend.find_customer`. Escalation is
+    this project's fail-open safe path -- refusing to escalate a case with
+    an unverified or even fabricated customer_id is worse than escalating
+    it, since a human reviewer can always investigate identity, but a
+    refused escalation leaves nobody looking at the case at all. `backend`
+    is accepted for signature consistency with the other three tools (and
+    so Module 04 can extend this tool later without a signature change),
+    not because this tool is required to use it.
     """
     raise NotImplementedError("Module 03's exercise: implement this as a real MCP tool.")

@@ -5,6 +5,15 @@ tool code will work unchanged once Module 04 wires a real backend in.
 
 Real implementations query resolve's actual customer/order systems. The test
 suite supplies a FakeBackend with scripted records.
+
+**Scope, stated explicitly:** this protocol is read-only (lookups only, no
+mutation). Module 03's tools verify a refund *decision* -- is this customer
+real, does this order belong to them, is the amount within what's
+refundable. Actually *executing* a refund -- persistence, decrementing
+`refundable_cents`, idempotency against a double-submitted request -- needs
+a stateful backend and is explicitly Module 04's exercise, not an omission
+here. `process_refund`'s "success" response in this module means "this
+refund decision was verified valid," not "money has moved."
 """
 from __future__ import annotations
 
@@ -16,7 +25,16 @@ class Backend(Protocol):
         """Return a customer record ({"customer_id": ..., "email": ...} or
         similar) if `identifier` matches a real customer, else None. Never
         raises for "not found" -- that's a valid, expected outcome, not an
-        error condition."""
+        error condition.
+
+        `identifier` is deliberately typed broadly: `get_customer` calls
+        this with a raw email/phone/account-ID string (a customer not yet
+        resolved), while `process_refund` calls it with an already-resolved
+        `customer_id` (re-verifying a customer it's been told is real). A
+        real implementation must accept both shapes -- `find_customer` is a
+        general "does this identify a real customer" check, not specifically
+        the first-contact lookup `get_customer` happens to use it for.
+        """
         ...
 
     def find_order(self, customer_id: str, order_id: str) -> Optional[dict]:

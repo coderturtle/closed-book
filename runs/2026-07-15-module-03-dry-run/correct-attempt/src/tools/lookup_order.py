@@ -13,10 +13,7 @@ def lookup_order(customer_id: str, order_id: str, backend: Backend) -> dict:
 
     Boundary vs. get_customer: get_customer resolves a *person* from an
     email/phone/account-ID; lookup_order resolves an *order* the caller
-    already knows belongs to that person. Deliberately similar signature
-    shape to get_customer (see the exam guide's own Sample Question 2, same
-    failure mode) -- the exercise this module actually tests is writing
-    descriptions precise enough that an agent doesn't confuse the two.
+    already knows belongs to that person.
     """
     from src.tool_errors import tool_error
 

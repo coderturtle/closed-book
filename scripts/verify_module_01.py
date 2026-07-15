@@ -30,8 +30,18 @@ from pathlib import Path
 
 @dataclass
 class CheckResult:
+    """The one return shape every check_module_NN(target) -> CheckResult
+    function uses, per fixtures/resolve/SPEC.md's compatibility contract --
+    unified 2026-07-15 after a doubt-driven-development review found the
+    first two links in the chain (check_module_01, check_module_02) already
+    disagreed on shape (bare CheckResult vs. tuple[CheckResult, str]).
+    `output` carries raw subprocess/pytest text a caller may want to print;
+    `findings` carries short human-readable summary lines.
+    """
+
     passed: bool
     findings: list[str] = field(default_factory=list)
+    output: str = ""
 
     def ok(self, msg: str) -> None:
         self.findings.append(f"  OK:   {msg}")
