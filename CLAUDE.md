@@ -53,7 +53,7 @@ End every session with: changed files, what changed, why, decisions, assumptions
 
 ## Session Closeout & Radar
 
-Close every session by running the factory closeout script from anywhere inside this repo:
+**If this session made changes to the repo**, close it by running the factory closeout script from anywhere inside this repo. **Do not run this for a read-only session** (e.g. a review or audit that made no edits) — it writes to `docs/session-log.md` and central ledgers, which a read-only reviewer should never do. (Added 2026-07-15: an unconditional version of this instruction caused a read-only adversarial-review agent to attempt running it during a doubt-driven-development pass; it failed safely under a read-only sandbox, but the instruction itself was the bug.)
 
 ```bash
 bash ~/hekton/scripts/end-session.sh
