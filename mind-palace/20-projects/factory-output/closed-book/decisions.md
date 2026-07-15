@@ -10,5 +10,7 @@
 | 2026-07-14 | Two-tier module gate: hands-on Claude Code artifact, then closed-book no-AI checkpoint | Resolves the named learn-with-AI/test-without-AI tension. Stated hypothesis, not yet evidenced. |
 | 2026-07-14 | Dogfooding commitment: sit the real CCA-F exam after Modules 01-06, CCAR-P after 07-10 | Same discipline as Borrow Native's Ardan Labs commitment. |
 | 2026-07-14 | Build-log/Pages site adapted from Borrow Native's Astro starter | Pipeline validated twice already; locally validated build + astro check clean. |
+| 2026-07-15 | Modules 01-06 build one shared project, `resolve` | Modeled on CCA-F's own Scenario 1 (customer support resolution agent). |
+| 2026-07-15 | Module 01 authored for real, with a completed dry run | Deterministic checker validated against 3 constructed attempts; caught a real bug in itself. |
 
 Full ADR log with rationale detail: repo `docs/decisions.md`.

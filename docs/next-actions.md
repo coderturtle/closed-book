@@ -2,8 +2,12 @@
 
 ## Immediate
 
-- [ ] Build module/deliverables skeleton (10 module READMEs + brand layer), per `docs/workshop-design.md`'s arc
-- [ ] Stand up build-log/Pages site skeleton (Astro-on-Pages, adapted from Borrow Native's pipeline)
+- [x] Build module/deliverables skeleton (10 module READMEs + brand layer), per `docs/workshop-design.md`'s arc
+- [x] Stand up build-log/Pages site skeleton (Astro-on-Pages, adapted from Borrow Native's pipeline)
+- [x] Coachgremlin: author Module 01 for real (exercise, rubric, deterministic checker, dry run) — done 2026-07-15
+- [ ] Coachgremlin: author Module 02 (Prompts and Structured Output), continuing the `resolve` project
+- [ ] A fourth dry-run attempt for Module 01 that passes the deterministic tier but is conceptually weak (per `runs/2026-07-14-module-01-dry-run/grading.md`'s "not yet validated" note) — needed before treating the two-tier design as proven for this module, not just plausible
+- [ ] A real learner (not just constructed attempts) needed before this workshop's two-tier gate hypothesis has any evidence beyond self-constructed dry runs
 
 ## This Week
 
