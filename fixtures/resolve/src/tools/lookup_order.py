@@ -1,11 +1,18 @@
-"""MCP tool: lookup_order. Authored for real in Module 03 (Tool & MCP Design).
+"""MCP tool module: lookup_order."""
+from __future__ import annotations
 
-Looks up an order by ID, scoped to a verified customer. Deliberately similar
-in shape to get_customer — the exercise this module actually tests is
-writing tool descriptions precise enough that an agent doesn't confuse the
-two (see the exam guide's own Sample Question 2, same failure mode).
-"""
+from src.backend import Backend
 
 
-def lookup_order(customer_id: str, order_id: str) -> dict:
+def lookup_order(customer_id: str, order_id: str, backend: Backend) -> dict:
+    """Look up an order by order_id, scoped to a customer_id already obtained
+    from get_customer -- never call this with a bare order_id and no
+    customer_id. If order_id exists but belongs to a *different* customer,
+    this returns "not found," not an error naming the mismatch -- never
+    confirm to a caller that an order_id is valid for someone else's account.
+
+    Boundary vs. get_customer: get_customer resolves a *person* from an
+    email/phone/account-ID; lookup_order resolves an *order* the caller
+    already knows belongs to that person.
+    """
     raise NotImplementedError("Module 03's exercise: implement this as a real MCP tool.")

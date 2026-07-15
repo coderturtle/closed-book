@@ -1,10 +1,20 @@
-"""MCP tool: get_customer. Authored for real in Module 03 (Tool & MCP Design).
+"""MCP tool module: get_customer."""
+from __future__ import annotations
 
-Looks up a customer by an identifier the caller provides (email, phone, or
-account ID). Returns a verified customer record or a structured "not found"
-result — never a bare exception a calling agent has to guess about.
-"""
+from src.backend import Backend
 
 
-def get_customer(identifier: str) -> dict:
+def get_customer(identifier: str, backend: Backend) -> dict:
+    """Look up a customer by identifier. Accepted formats: email address,
+    phone number, or account ID (a string starting with "acct_") -- never
+    an order ID. Returns a verified customer record, or a structured
+    "not found" result -- never a bare exception a calling agent has to
+    guess about.
+
+    Boundary vs. lookup_order: get_customer's identifier is about the
+    *person* (email/phone/account ID); lookup_order's identifiers are about
+    the person's *order* (customer_id + a separate order_id). An agent with
+    a bare order-looking string ("ORD-4821") should call lookup_order, not
+    this tool.
+    """
     raise NotImplementedError("Module 03's exercise: implement this as a real MCP tool.")

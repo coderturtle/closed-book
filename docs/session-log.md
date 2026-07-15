@@ -204,3 +204,73 @@ Module 03, both tiers together, doubt-driven-development before done — now the
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-15 (cont'd) - Module 03 authored, both tiers together, lessons applied proactively
+
+### What changed
+
+- Implemented `Backend` protocol (`fixtures/resolve/src/backend.py`) and a shared `tool_error()` helper (`fixtures/resolve/src/tool_errors.py`) so all four MCP tools (`get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`) share one consistent injection pattern and error shape.
+- Refactored `scripts/verify_module_02.py` to expose an importable `check_module_02()`, matching Module 01's `check_module_01()` pattern, so `scripts/verify_module_03.py` chains it via a real function call rather than shelling out to a subprocess.
+- Wrote a real, provided test suite (`fixtures/resolve/tests/test_tools.py`, 16 tests), including the safety-critical property: `process_refund` must independently re-verify `customer_id` against the backend before proceeding, distinct from Module 04's later session-level hook.
+- Applied both prior modules' doubt-driven-development lessons proactively rather than waiting for a review to find them: designed rubric criterion 2 (docstring keyword presence) as deterministic from the start; constructed a `weak-docstring-attempt` before shipping, confirming the deterministic/conceptual split actually catches what it's supposed to.
+- Found and fixed a real bug in the exercise's own first draft, before any attempt was graded: every tool's description was written as a module-level docstring, not the function's own `__doc__` — real MCP tooling reads the latter. `get_customer.__doc__` came back empty against the first draft.
+- Authored `modules/03-tool-mcp-design/checkpoint.md`: 12 originally-written questions, full CCA-F Domain 2 coverage (2.1-2.5).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 Module 03 entries.
+
+### Assumptions
+
+Rubric criterion 4 (process_refund's defense-in-depth reasoning documented as deliberate) has no dry-run attempt isolating it. Doubt-driven-development has not yet been run against this module this pass.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Ask about a doubt-driven-development pass for Module 03 before merging (each Codex invocation needs its own turn's authorization). Then Module 04. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_03.py` run against all 3 constructed attempts (correct/trusts-caller/weak-docstring) plus the cumulative-gate chain (Module 01 -> 02 -> 03) — all match expectations.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
+
+## 2026-07-15 (cont'd) - Doubt-driven-development review of Module 03, and remediation
+
+Ran the same process as Modules 01-02: a fresh-context Claude subagent, Codex CLI (with live repo exploration this time, not just web search), and a Fable-model replan.
+
+### What changed
+
+- Found the cumulative-gate chain into Module 04 was already broken: `check_module_01` returns a bare `CheckResult`, `check_module_02` (added during its own remediation) returns `tuple[CheckResult, str]`, and Module 03's first draft exposed no `check_module_03` at all for Module 04 to chain against.
+- Found something more serious than anything in either prior review: both `verify_module_02.py` and the first `verify_module_03.py` ran the test file *from the submission itself*, not a canonical copy — a learner could weaken or delete `tests/test_extraction.py`/`tests/test_tools.py` and pass trivially. The "don't edit this" notice at the top of each file was prose, not enforcement.
+- Fixed both structurally: unified every `check_module_NN(target) -> CheckResult` on one shape, added `check_module_03`, and rewrote both checkers to copy the repo's own canonical test file to a temp location before running it. Verified empirically (not just by code inspection) that legitimate submissions are unaffected and that a tampered test file no longer helps — tested against both Module 02 and Module 03.
+- Closed the remaining gaps: `process_refund`'s docstring is now checked (previously 2 of 4 tools, despite the rubric's claim); a new ordering test makes "re-verify BEFORE doing anything else" a real gate, not prose; `ERROR_CATEGORIES` gained documented semantics and became a tuple; `escalate_to_human` is now documented and tested as the project's deliberate fail-open path; the order-leak test tightened to an equality assertion; exam-meta commentary stripped from `lookup_order`'s docstring; the README's `.mcp.json` takeaway overclaim fixed; two checkpoint answers gained precision caveats; `backend.py` now explicitly defers refund execution semantics to Module 04.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 Module 03 doubt-driven-development entries.
+
+### Assumptions
+
+Rubric criterion 4 still has no dry-run attempt isolating it from the now-deterministic ordering test.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries. The test-file-tampering gap (fixed here) applied to every module built so far and would have applied to every future one if not caught now.
+
+### Next Actions
+
+Module 04, both tiers together, `check_module_03` ready to chain. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_03.py` re-run against all 3 attempts (20 tests each), the cumulative-gate isolation check, and a tampering check (weakening a broken attempt's own test file no longer helps it pass) — all match expectations. Same tampering check re-verified for Module 02.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
