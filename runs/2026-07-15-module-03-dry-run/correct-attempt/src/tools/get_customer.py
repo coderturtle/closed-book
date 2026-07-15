@@ -17,4 +17,9 @@ def get_customer(identifier: str, backend: Backend) -> dict:
     a bare order-looking string ("ORD-4821") should call lookup_order, not
     this tool.
     """
-    raise NotImplementedError("Module 03's exercise: implement this as a real MCP tool.")
+    from src.tool_errors import tool_error
+
+    record = backend.find_customer(identifier)
+    if record is None:
+        return tool_error("business", f"no customer found for identifier {identifier!r}", False)
+    return {"customer_id": record["customer_id"], **record}

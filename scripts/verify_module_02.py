@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from verify_module_01 import check_module_01  # noqa: E402
+from verify_module_01 import CheckResult, check_module_01  # noqa: E402
 
 
 def run_extraction_tests(target: Path) -> tuple[bool, str]:
@@ -31,6 +31,24 @@ def run_extraction_tests(target: Path) -> tuple[bool, str]:
         text=True,
     )
     return result.returncode == 0, result.stdout + result.stderr
+
+
+def check_module_02(target: Path) -> tuple[CheckResult, str]:
+    """Importable by later modules' checkers for cumulative-gate chaining
+    (fixtures/resolve/SPEC.md's compatibility contract). Returns Module 01's
+    CheckResult (chained) and the raw pytest output for tests/test_extraction.py
+    -- callers that only need pass/fail should check `result.passed and
+    "passed" appears via the returned pytest output`, but the simplest
+    correct check is calling this module's own `main()` exit code; this
+    function exists so a later module can chain the *result*, not just the
+    process exit code.
+    """
+    m1 = check_module_01(target)
+    if not m1.passed:
+        return m1, ""
+    passed, output = run_extraction_tests(target)
+    result = CheckResult(passed=passed, findings=list(m1.findings))
+    return result, output
 
 
 def main(argv: list[str]) -> int:

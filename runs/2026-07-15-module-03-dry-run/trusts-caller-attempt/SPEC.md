@@ -22,7 +22,7 @@ Each module's checker is the *only* thing a later module may assume from an arbi
 |---|---|---|---|
 | 01 | Configuring Claude Code for Real Work | Full Claude Code configuration for this project: CLAUDE.md hierarchy, path-scoped rules, a project slash command, CI-mode readiness | **Deterministic tier authored and dry-run validated** (`runs/2026-07-14-module-01-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/01-configuring-claude-code/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 02 | Prompts and Structured Output That Survive Production | Structured extraction for refund amounts/escalation reasons from freeform customer messages | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-02-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/02-prompts-structured-output/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
-| 03 | Designing Tools and MCP Interfaces | Real implementations of `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human` as MCP tools with structured error responses | **Deterministic tier authored and dry-run validated** (`runs/2026-07-15-module-03-dry-run/`, 3 constructed attempts); **closed-book checkpoint authored** (`modules/03-tool-mcp-design/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
+| 03 | Designing Tools and MCP Interfaces | Real implementations of `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human` as MCP tools with structured error responses | Not started |
 | 04 | Agentic Loops and Multi-Agent Orchestration | The coordinator agent (`src/agent.py`): the real agentic loop calling the Module 03 tools, with a programmatic hook enforcing verify-before-refund | Not started |
 | 05 | Context and Reliability at Scale | Context handling across a long, multi-issue support session (case-facts extraction, escalation handoff summaries) | Not started |
 | 06 | Foundations Capstone | A real, seeded bug spanning 3+ of the above capabilities, diagnosed and fixed | Not started |
@@ -65,28 +65,10 @@ Implement `build_extraction_prompt` (states the schema explicitly, embeds `FEW_S
 
 See `runs/2026-07-15-module-02-dry-run/` for the real dry run and its findings (a subtle `or 0` bug that fabricates a refund amount, caught by exactly one test; a structural gap where the original exercise interface never required a prompt/few-shot artifact at all, found and fixed by a doubt-driven-development review the same day), and `modules/02-prompts-structured-output/README.md` for the full rubric.
 
-## Module 03: the four MCP tools
-
-### What's already here
-
-- `src/backend.py` — the `Backend` protocol (`find_customer`, `find_order`) every tool is injected with, mirroring Module 02's `model_client` injection.
-- `src/tool_errors.py` — `tool_error()`, the one shared structured-error shape all four tools use.
-- `src/tools/*.py` — all four tools, each `raise NotImplementedError`, each with a real function-level docstring (not a module-level one — a real bug found and fixed during this module's own dry run, see `runs/2026-07-15-module-03-dry-run/grading.md`) stating its accepted inputs and boundaries.
-- `tests/test_tools.py` — a real, provided pytest suite (16 tests), not a placeholder.
-
-### The exercise (see `modules/03-tool-mcp-design/README.md` for the full rubric)
-
-Implement all four tools' bodies. `process_refund` is the safety-critical one: it must independently re-verify `customer_id` against the backend before doing anything else (defense in depth, distinct from Module 04's later session-level hook enforcement).
-
-### The actual point of this exercise
-
-See `runs/2026-07-15-module-03-dry-run/` for the real dry run and its findings, and `modules/03-tool-mcp-design/README.md` for the full rubric.
-
 ## Running it
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # first time only
 python3 scripts/verify_module_01.py fixtures/resolve   # from repo root
 python3 scripts/verify_module_02.py fixtures/resolve   # chains Module 01's check, then runs tests/test_extraction.py
-python3 scripts/verify_module_03.py fixtures/resolve   # chains Module 02's check, then runs tests/test_tools.py
 ```

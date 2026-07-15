@@ -13,4 +13,12 @@ def escalate_to_human(customer_id: str, reason: str, summary: dict, backend: Bac
     human with half the picture makes a worse decision than one who was
     never assigned the case at all.
     """
-    raise NotImplementedError("Module 03's exercise: implement this as a real MCP tool.")
+    from src.tool_errors import tool_error
+
+    if not summary.get("root_cause"):
+        return tool_error("validation", "summary.root_cause is required and must be non-empty", False)
+    if not summary.get("recommended_action"):
+        return tool_error(
+            "validation", "summary.recommended_action is required and must be non-empty", False
+        )
+    return {"escalated": True, "customer_id": customer_id, "reason": reason}

@@ -18,4 +18,11 @@ def lookup_order(customer_id: str, order_id: str, backend: Backend) -> dict:
     failure mode) -- the exercise this module actually tests is writing
     descriptions precise enough that an agent doesn't confuse the two.
     """
-    raise NotImplementedError("Module 03's exercise: implement this as a real MCP tool.")
+    from src.tool_errors import tool_error
+
+    record = backend.find_order(customer_id, order_id)
+    if record is None:
+        # Same message whether order_id doesn't exist at all or belongs to a
+        # different customer -- never confirm which case it was.
+        return tool_error("business", f"no order {order_id!r} found for this customer", False)
+    return {**record}

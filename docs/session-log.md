@@ -204,3 +204,38 @@ Module 03, both tiers together, doubt-driven-development before done — now the
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-15 (cont'd) - Module 03 authored, both tiers together, lessons applied proactively
+
+### What changed
+
+- Implemented `Backend` protocol (`fixtures/resolve/src/backend.py`) and a shared `tool_error()` helper (`fixtures/resolve/src/tool_errors.py`) so all four MCP tools (`get_customer`, `lookup_order`, `process_refund`, `escalate_to_human`) share one consistent injection pattern and error shape.
+- Refactored `scripts/verify_module_02.py` to expose an importable `check_module_02()`, matching Module 01's `check_module_01()` pattern, so `scripts/verify_module_03.py` chains it via a real function call rather than shelling out to a subprocess.
+- Wrote a real, provided test suite (`fixtures/resolve/tests/test_tools.py`, 16 tests), including the safety-critical property: `process_refund` must independently re-verify `customer_id` against the backend before proceeding, distinct from Module 04's later session-level hook.
+- Applied both prior modules' doubt-driven-development lessons proactively rather than waiting for a review to find them: designed rubric criterion 2 (docstring keyword presence) as deterministic from the start; constructed a `weak-docstring-attempt` before shipping, confirming the deterministic/conceptual split actually catches what it's supposed to.
+- Found and fixed a real bug in the exercise's own first draft, before any attempt was graded: every tool's description was written as a module-level docstring, not the function's own `__doc__` — real MCP tooling reads the latter. `get_customer.__doc__` came back empty against the first draft.
+- Authored `modules/03-tool-mcp-design/checkpoint.md`: 12 originally-written questions, full CCA-F Domain 2 coverage (2.1-2.5).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 Module 03 entries.
+
+### Assumptions
+
+Rubric criterion 4 (process_refund's defense-in-depth reasoning documented as deliberate) has no dry-run attempt isolating it. Doubt-driven-development has not yet been run against this module this pass.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Ask about a doubt-driven-development pass for Module 03 before merging (each Codex invocation needs its own turn's authorization). Then Module 04. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_03.py` run against all 3 constructed attempts (correct/trusts-caller/weak-docstring) plus the cumulative-gate chain (Module 01 -> 02 -> 03) — all match expectations.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
