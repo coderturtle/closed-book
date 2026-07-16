@@ -26,7 +26,7 @@ Each module's checker is the *only* thing a later module may assume from an arbi
 | 02 | Prompts and Structured Output That Survive Production | Structured extraction for refund amounts/escalation reasons from freeform customer messages | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-02-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/02-prompts-structured-output/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 03 | Designing Tools and MCP Interfaces | Real implementations of `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human` as MCP tools with structured error responses | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-03-dry-run/`, 3 constructed attempts, 20 tests); **closed-book checkpoint authored** (`modules/03-tool-mcp-design/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 04 | Agentic Loops and Multi-Agent Orchestration | The coordinator agent (`src/agent.py`): the real agentic loop calling the Module 03 tools, with a programmatic hook enforcing verify-before-refund | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-04-dry-run/`, 5 constructed attempts, 17 tests); **closed-book checkpoint authored** (`modules/04-agentic-orchestration/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
-| 05 | Context and Reliability at Scale | Context handling across a long, multi-issue support session (case-facts extraction, escalation handoff summaries) | Not started |
+| 05 | Context and Reliability at Scale | Context handling across a long, multi-issue support session: sourced, conflict-aware case facts (`src/context.py`) and a structured escalation decision | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-16-module-05-dry-run/`, 5 constructed attempts, 30 tests); **closed-book checkpoint authored** (`modules/05-context-reliability/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 06 | Foundations Capstone | A real, seeded bug spanning 3+ of the above capabilities, diagnosed and fixed | Not started |
 
 ## Module 01: Claude Code configuration
@@ -101,6 +101,23 @@ Implement `run_support_session` (the agentic loop, keyed strictly on `stop_reaso
 
 See `runs/2026-07-15-module-04-dry-run/` for the real dry run and its findings, and `modules/04-agentic-orchestration/README.md` for the full rubric.
 
+## Module 05: case facts and the escalation decision
+
+### What's already here
+
+- `src/context.py` — `CaseFact`/`CaseFacts` (data structures, already implemented, not part of the exercise), `update_case_facts` and `should_escalate`, each `raise NotImplementedError` with a real docstring stating the contract.
+- `tests/test_context.py` — a real, provided pytest suite (30 tests), not a placeholder.
+
+### The exercise (see `modules/05-context-reliability/README.md` for the full rubric)
+
+Implement `update_case_facts` (folds one tool result into a persistent, sourced case-facts record, reading from the result rather than the request, recording rather than silently resolving any conflict between an existing fact and a new one) and `should_escalate` (a structured escalation decision checking conflicts, then a real error-count threshold, then iteration proximity, in that order — never a model-reported confidence score).
+
+**Scope decision, stated explicitly:** `resolve` has no subagents yet and isn't a large-codebase-under-active-exploration scenario, so Task Statements 5.3 (multi-agent error propagation) and 5.4 (large-codebase context management) have no `resolve`-specific artifact in this module either — tested in the closed-book checkpoint only, the same division-of-labor convention every prior module has used for task statements without a natural artifact yet.
+
+### The actual point of this exercise
+
+See `runs/2026-07-16-module-05-dry-run/` for the real dry run and its findings, and `modules/05-context-reliability/README.md` for the full rubric.
+
 ## Running it
 
 ```bash
@@ -109,4 +126,5 @@ python3 scripts/verify_module_01.py fixtures/resolve   # from repo root
 python3 scripts/verify_module_02.py fixtures/resolve   # chains Module 01's check, then runs tests/test_extraction.py
 python3 scripts/verify_module_03.py fixtures/resolve   # chains Module 02's check, then runs tests/test_tools.py
 python3 scripts/verify_module_04.py fixtures/resolve   # chains Module 03's check, then runs tests/test_agent.py
+python3 scripts/verify_module_05.py fixtures/resolve   # chains Module 04's check, then runs tests/test_context.py
 ```

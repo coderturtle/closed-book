@@ -8,7 +8,7 @@ Part 1's modules (01-06) all build one real shared project, `resolve`, a custome
 
 **Hands-on by design, not passive text.** No module here completes by reading it. Every module states a required gate: a real artifact plus an observed closed-book checkpoint. Every gate also has a stated **takeaway**: you keep something reusable, not just proof you did the exercise.
 
-> **Content status: Modules 01-04 are real, Modules 05-10 are skeleton.** [Module 01](01-configuring-claude-code/README.md), [Module 02](02-prompts-structured-output/README.md), [Module 03](03-tool-mcp-design/README.md), and [Module 04](04-agentic-orchestration/README.md) each have a working exercise, a real deterministic checker (`scripts/verify_module_01.py` through `verify_module_04.py`, each chaining the one before it per the cumulative-gate convention), a real closed-book checkpoint, and a completed multi-attempt dry run you can run today. The rest have a decided question, gate shape, and takeaway shape, but no authored exercise yet.
+> **Content status: Modules 01-05 are real, Modules 06-10 are skeleton.** [Module 01](01-configuring-claude-code/README.md), [Module 02](02-prompts-structured-output/README.md), [Module 03](03-tool-mcp-design/README.md), [Module 04](04-agentic-orchestration/README.md), and [Module 05](05-context-reliability/README.md) each have a working exercise, a real deterministic checker (`scripts/verify_module_01.py` through `verify_module_05.py`, each chaining the one before it per the cumulative-gate convention), a real closed-book checkpoint, and a completed multi-attempt dry run you can run today. The rest have a decided question, gate shape, and takeaway shape, but no authored exercise yet.
 
 ## Part 1 — Architect Foundations (CCA-F)
 
