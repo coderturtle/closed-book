@@ -421,3 +421,76 @@ Module 06 (Foundations Capstone), continuing `resolve`, `check_module_05` ready 
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-16 (cont'd) - Module 06 authored (Foundations Capstone), closing Part 1
+
+Sixth and final Coachgremlin content pass for Part 1 (Architect Foundations). This module has a genuinely different exercise shape from every prior one — diagnose-and-fix, not stub-implementation — matching CCA-F's own scenario-based exam format testing whether a candidate can find a defect in a mostly-working, unfamiliar system rather than build one from nothing.
+
+### What changed
+
+- `fixtures/resolve/src/session.py`: `run_full_support_session`, fully written and running (not `raise NotImplementedError`), integrating Module 02's `extract_refund_request`, Module 04's `verify_before_refund_hook`/loop pattern, and Module 05's `update_case_facts`/`should_escalate` into one function. Ships with 2 real, seeded defects: (1) `ExtractionResult.confidence` fed into a parallel, unofficial escalation check bypassing `should_escalate` entirely; (2) `should_escalate` checked against a stale, pre-update `CaseFacts`, one turn behind the current tool call's result.
+- `fixtures/resolve/tests/test_session.py`: a real, provided pytest suite (5 tests), written to fail 2/5 against the exact shipped file — the deterministic gate does not start green for this module, deliberately.
+- `scripts/verify_module_06.py`: chains `check_module_05` (which chains `check_module_04`, `check_module_03`, `check_module_02`, `check_module_01`).
+- Two new files only — no prior module's shipped stub or test file touched. Full regression across all 21 prior dry-run attempts (Modules 01-05) confirms zero interference.
+- `modules/06-foundations-capstone/README.md`: full exercise (explicitly naming the diagnose-and-fix shape as different from Modules 01-05), two-tier gate, rubric (3 criteria), required-to-advance, self-check, takeaway — replacing the design-phase skeleton.
+- `modules/06-foundations-capstone/checkpoint.md`: a full mock exam matching CCA-F's own real structure — 6 original scenarios (none of them the real exam's own published scenarios), complete 4 of 6 (drawn, not self-selected), 42 originally-written questions total, 720/1000 to pass. A documented, honest reduction from the real exam's ~60-question total for a 4-scenario draw.
+- `fixtures/resolve/SPEC.md`: Module 06 status row and detail section added; "Running it" extended.
+- `modules/README.md`: content-status line updated (Modules 01-06 real, closing Part 1 in full; 07-10 skeleton, Part 2).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-16 Module 06 entries: the diagnose-and-fix exercise shape decision; the two seeded defects and why each spans a different pair of prior modules; the dry-run's 4 flawed attempts (2 isolating each defect independently, 1 over-correction case); the mock exam's original-scenario-pool scope decision.
+
+### Assumptions
+
+No doubt-driven-development review has been run against this module yet — pending, per standing practice. The mock exam's answer key has no dry-run validation pass of its own (no constructed "attempt" checking the 42-question answer key for errors) — flagged as a real gap in `docs/next-actions.md`.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Offer and (if accepted) run doubt-driven-development review before treating Module 06 as done. Then Part 2 (Architect Professional) begins with Module 07 — no shared-project decision exists yet for Part 2, an explicitly open question left in `fixtures/resolve/SPEC.md`. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_06.py` run against all 5 constructed attempts (correct/unfixed/fix-bug1-only/fix-bug2-only/over-correction) plus the cumulative-gate chain (Module 01 → 02 → 03 → 04 → 05 → 06) — all match expectations, including the over-correction case passing its intended defect's test vacuously while failing a separate contract test. Full regression re-run across Modules 01-05's own dry-run attempts (4+4+3+5+5 = 21 attempts) after adding Module 06's two new files — all outcomes match their pre-existing expected results exactly.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
+
+## 2026-07-16 (cont'd) - Doubt-driven-development review of Module 06, and remediation (two rounds)
+
+Ran the same process as Modules 01-05: a fresh-context Claude subagent (adversarial review, actually executing the checker against every attempt directory), Codex CLI (its own execution plus a hand-recount of the checkpoint's domain tally), then a Fable-model critique of the remediation itself, building its own mutants.
+
+### What changed
+
+- **Round 1 (Claude + Codex), dominant findings:** every one of the checkpoint's 42 answer-key entries named option A as correct, no exceptions — fixed via a mechanically-verified per-question option rotation (final distribution A:10, B:11, C:11, D:10), verified two ways (option text re-parsed to confirm it landed at the claimed letter; distractor letters re-parsed to confirm they're exactly the 3 non-correct letters) for all 42 questions. Codex's more severe finding: the "correct" reference implementation itself never escalated when the hook repeatedly rejected a call — reproduced live against `correct-attempt` (3 blocked refunds → silent `max_iterations`, `error_count=0`) — contradicting this project's own fail-closed design default. This was a gap in the shared *base design*, identical across the shipped stub and all five dry-run attempts, not one of the two seeded pedagogical defects; fixed uniformly (a rejection now also calls `should_escalate` before continuing), with a 6th test added (test suite 5→6).
+- **Round 1, further findings:** 3 scenarios (C, D, F) renamed to reduce resemblance to the real exam's own published scenarios (a release-notes drafting agent, a customer-feedback synthesizer, a legacy-codebase documentation generator, replacing framings that tracked "Claude Code for CI," "Multi-Agent Research System," and "Developer Productivity with Claude" too closely). Two coverage gaps disclosed explicitly in the checkpoint's own intro rather than left implicit: Task Statement 5.4 has zero questions in this pool (covered in Module 05's own checkpoint); Domain 3/Domain 4 have equal real weight but unequal pool representation. The checkpoint's originality note reworded so Scenario A's deliberate, admitted parallel to the real exam's own "Customer Support Resolution Agent" scenario is disclosed rather than contradicted by an unqualified "none of these are the real exam's scenarios" claim.
+- **Round 2 (Fable critique of round 1):** found the new 6th test never checked that escalation *doesn't* happen prematurely — a constructed mutant escalating unconditionally on the first rejection (ignoring iteration budget, never actually calling `should_escalate`) passed all 6 tests. Fixed by tightening two tests to assert the model was actually consulted twice before escalating, and that a single rejection with iteration budget remaining reaches a normal `end_turn`. Also found the Scenario C/F renaming left stale "review"/"new engineers' first week" vocabulary in 5 distractor options (not correct answers), and that Scenario B's B7 stem described a scenario disjoint from its own premise — all fixed and re-verified against Fable's own constructed mutants.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-16 Module 06 doubt-driven-development and Fable-critique entries.
+
+### Assumptions
+
+No further review rounds planned; the module has now been through dry-run construction, doubt-driven-development, and a critique of the remediation itself — the same three-stage depth Modules 04-05 established, closing Part 1 of the workshop's arc.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Part 2 (Architect Professional) begins with Module 07 — no shared-project decision exists yet for Part 2, an explicitly open question left in `fixtures/resolve/SPEC.md`. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_06.py` re-run against all 5 attempts (6 tests each) after every fix — correct 6/6, unfixed 4/6, fix-bug1-only 5/6, fix-bug2-only 5/6, over-correction 5/6. Fable's own constructed escalate-immediately mutant now fails exactly the two tightened tests, confirmed by live execution. Full regression re-run across Modules 01-05's own dry-run attempts (21 attempts) after every Module 06 doc/code edit in this remediation — all outcomes match their pre-existing expected results exactly.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.

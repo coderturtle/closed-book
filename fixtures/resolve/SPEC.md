@@ -27,7 +27,7 @@ Each module's checker is the *only* thing a later module may assume from an arbi
 | 03 | Designing Tools and MCP Interfaces | Real implementations of `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human` as MCP tools with structured error responses | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-03-dry-run/`, 3 constructed attempts, 20 tests); **closed-book checkpoint authored** (`modules/03-tool-mcp-design/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 04 | Agentic Loops and Multi-Agent Orchestration | The coordinator agent (`src/agent.py`): the real agentic loop calling the Module 03 tools, with a programmatic hook enforcing verify-before-refund | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-04-dry-run/`, 5 constructed attempts, 17 tests); **closed-book checkpoint authored** (`modules/04-agentic-orchestration/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 05 | Context and Reliability at Scale | Context handling across a long, multi-issue support session: sourced, conflict-aware case facts (`src/context.py`) and a structured escalation decision | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-16-module-05-dry-run/`, 5 constructed attempts, 30 tests); **closed-book checkpoint authored** (`modules/05-context-reliability/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
-| 06 | Foundations Capstone | A real, seeded bug spanning 3+ of the above capabilities, diagnosed and fixed | Not started |
+| 06 | Foundations Capstone | A real integration of Modules 02, 04, 05 (`src/session.py`), shipped with 2 seeded defects spanning those modules, diagnosed and fixed | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-16-module-06-dry-run/`, 5 constructed attempts, 6 tests); **closed-book mock exam authored** (`modules/06-foundations-capstone/checkpoint.md`, 6-scenario pool, 42 questions). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 
 ## Module 01: Claude Code configuration
 
@@ -118,6 +118,21 @@ Implement `update_case_facts` (folds one tool result into a persistent, sourced 
 
 See `runs/2026-07-16-module-05-dry-run/` for the real dry run and its findings, and `modules/05-context-reliability/README.md` for the full rubric.
 
+## Module 06: the capstone integration, diagnosed and fixed
+
+### What's already here
+
+- `src/session.py` — `run_full_support_session`, fully implemented (not a stub), integrating `extract_refund_request` (Module 02), `verify_before_refund_hook` (Module 04), and `update_case_facts`/`should_escalate` (Module 05) into one function. Ships with 2 real, seeded defects.
+- `tests/test_session.py` — a real, provided pytest suite (6 tests), written to fail against `src/session.py` exactly as shipped (2 of 6 fail initially).
+
+### The exercise (see `modules/06-foundations-capstone/README.md` for the full rubric)
+
+Diagnose and fix both seeded defects: (1) a parallel, unofficial escalation path using `ExtractionResult.confidence` that bypasses `should_escalate`'s own three-signal contract entirely, reintroducing the unreliable-self-reported-signal anti-pattern Module 05 built specifically to keep out; (2) `should_escalate` checked against a stale, pre-update `CaseFacts`, one full turn behind the current tool call's actual result. This is the one module in this arc that is not a stub-implementation exercise — the starting code already runs, and the job is diagnosis and repair, the real CCA-F skill this capstone exists to test.
+
+### The actual point of this exercise
+
+See `runs/2026-07-16-module-06-dry-run/` for the real dry run and its findings, and `modules/06-foundations-capstone/README.md` for the full rubric.
+
 ## Running it
 
 ```bash
@@ -127,4 +142,5 @@ python3 scripts/verify_module_02.py fixtures/resolve   # chains Module 01's chec
 python3 scripts/verify_module_03.py fixtures/resolve   # chains Module 02's check, then runs tests/test_tools.py
 python3 scripts/verify_module_04.py fixtures/resolve   # chains Module 03's check, then runs tests/test_agent.py
 python3 scripts/verify_module_05.py fixtures/resolve   # chains Module 04's check, then runs tests/test_context.py
+python3 scripts/verify_module_06.py fixtures/resolve   # chains Module 05's check, then runs tests/test_session.py (fails 2/5 until both seeded defects are fixed)
 ```
