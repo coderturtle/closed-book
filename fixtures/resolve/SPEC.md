@@ -25,7 +25,7 @@ Each module's checker is the *only* thing a later module may assume from an arbi
 | 01 | Configuring Claude Code for Real Work | Full Claude Code configuration for this project: CLAUDE.md hierarchy, path-scoped rules, a project slash command, CI-mode readiness | **Deterministic tier authored and dry-run validated** (`runs/2026-07-14-module-01-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/01-configuring-claude-code/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 02 | Prompts and Structured Output That Survive Production | Structured extraction for refund amounts/escalation reasons from freeform customer messages | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-02-dry-run/`, 4 constructed attempts); **closed-book checkpoint authored** (`modules/02-prompts-structured-output/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 03 | Designing Tools and MCP Interfaces | Real implementations of `get_customer`, `lookup_order`, `process_refund`, `escalate_to_human` as MCP tools with structured error responses | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-03-dry-run/`, 3 constructed attempts, 20 tests); **closed-book checkpoint authored** (`modules/03-tool-mcp-design/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
-| 04 | Agentic Loops and Multi-Agent Orchestration | The coordinator agent (`src/agent.py`): the real agentic loop calling the Module 03 tools, with a programmatic hook enforcing verify-before-refund | Not started |
+| 04 | Agentic Loops and Multi-Agent Orchestration | The coordinator agent (`src/agent.py`): the real agentic loop calling the Module 03 tools, with a programmatic hook enforcing verify-before-refund | **Deterministic tier authored, doubt-driven-development reviewed, and dry-run validated** (`runs/2026-07-15-module-04-dry-run/`, 5 constructed attempts, 17 tests); **closed-book checkpoint authored** (`modules/04-agentic-orchestration/checkpoint.md`). Conceptual-tier grading against a real learner attempt is not yet evidenced. |
 | 05 | Context and Reliability at Scale | Context handling across a long, multi-issue support session (case-facts extraction, escalation handoff summaries) | Not started |
 | 06 | Foundations Capstone | A real, seeded bug spanning 3+ of the above capabilities, diagnosed and fixed | Not started |
 
@@ -84,6 +84,23 @@ Implement all four tools' bodies. `process_refund` is the safety-critical one: i
 
 See `runs/2026-07-15-module-03-dry-run/` for the real dry run and its findings, and `modules/03-tool-mcp-design/README.md` for the full rubric.
 
+## Module 04: the coordinator agent
+
+### What's already here
+
+- `src/agent.py` — `SessionState`, `verify_before_refund_hook`, and `run_support_session`, each `raise NotImplementedError` (the loop) or fully stubbed with a real docstring stating the contract. Injected with `model_client: AgentModelClient` (mirroring Module 02's `model_client` injection) and `tools: ToolRegistry` + `backend` (mirroring Module 03's `backend` injection), so the deterministic test suite can supply a scripted model client and spy tools without a live API call.
+- `tests/test_agent.py` — a real, provided pytest suite (17 tests), not a placeholder.
+
+### The exercise (see `modules/04-agentic-orchestration/README.md` for the full rubric)
+
+Implement `run_support_session` (the agentic loop, keyed strictly on `stop_reason`, never on inspecting response text) and `verify_before_refund_hook` (a programmatic hook, not a prompt instruction: blocks `process_refund` unless its `customer_id` matches the specific customer a `get_customer` call already *succeeded* for in the same session — not merely that some `get_customer` call succeeded at some point; never blocks `escalate_to_human`). This is the session-level enforcement layer Module 03's own `process_refund` docstring names as distinct from, and layered on top of, that tool's own defense-in-depth re-verification — two layers, deliberately not one.
+
+**Scope decision, stated explicitly (resolves the deferral `backend.py` stated during Module 03):** this module does not extend `Backend` into a stateful, mutating protocol. Refund persistence and idempotency are real production concerns, but they're Domain 2 (tool design) territory this project already resolved in Module 03, not Domain 1 (agentic orchestration), which is what this module teaches. `process_refund`'s "success" response continues to mean "this refund decision was verified valid," not "money has moved," for the rest of this project.
+
+### The actual point of this exercise
+
+See `runs/2026-07-15-module-04-dry-run/` for the real dry run and its findings, and `modules/04-agentic-orchestration/README.md` for the full rubric.
+
 ## Running it
 
 ```bash
@@ -91,4 +108,5 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # first tim
 python3 scripts/verify_module_01.py fixtures/resolve   # from repo root
 python3 scripts/verify_module_02.py fixtures/resolve   # chains Module 01's check, then runs tests/test_extraction.py
 python3 scripts/verify_module_03.py fixtures/resolve   # chains Module 02's check, then runs tests/test_tools.py
+python3 scripts/verify_module_04.py fixtures/resolve   # chains Module 03's check, then runs tests/test_agent.py
 ```

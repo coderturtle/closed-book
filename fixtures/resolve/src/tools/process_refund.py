@@ -10,9 +10,11 @@ def process_refund(customer_id: str, order_id: str, amount_cents: int, backend: 
     never refund without a verified customer.
 
     Two separate layers enforce this, deliberately not one:
-    - Module 04 (later) adds a conversation-level hook that blocks calling
-      this tool at all until get_customer has actually run earlier in the
-      same session -- enforcing the *order* tool calls happen in.
+    - Module 04 (later) adds a session-level hook that blocks calling this
+      tool at all unless its own customer_id matches the specific customer
+      a get_customer call already succeeded for earlier in the same
+      session -- enforcing not just *that* verification happened, but that
+      it happened *for this customer*.
     - THIS tool's own job is different and narrower: it must independently
       re-verify customer_id against the backend before doing anything else
       -- defense in depth, so this tool is safe to call even if some future

@@ -274,3 +274,76 @@ Module 04, both tiers together, `check_module_03` ready to chain. See `docs/next
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-15 (cont'd) - Module 04 authored (Agentic Loops and Multi-Agent Orchestration)
+
+Fourth Coachgremlin content pass, continuing `resolve`. Both tiers built together from the start, per this workshop's own established practice since Module 02.
+
+### What changed
+
+- `fixtures/resolve/src/agent.py`: real docstrings + exercise contract for `SessionState`, `verify_before_refund_hook`, and `run_support_session` (all still `raise NotImplementedError` in the shipped stub, real bodies live in `runs/2026-07-15-module-04-dry-run/*/src/agent.py`). Dependency-injection pattern matching Modules 02-03 (`model_client`, `tools`, `backend` all injected).
+- `fixtures/resolve/tests/test_agent.py`: a real, provided pytest suite (12 tests) using spy tool functions rather than Module 03's real tool implementations, isolating this module's own exercise (the loop and the hook) from already-tested tool behavior.
+- `scripts/verify_module_04.py`: chains `check_module_03` (which chains `check_module_02`, which chains `check_module_01`), then runs the repo's canonical `tests/test_agent.py` via the same canonical-test-execution pattern Module 03's remediation established.
+- `fixtures/resolve/src/backend.py`: docstring rewritten to resolve the deferred stateful-backend question Module 03 left open — Module 04 does not extend `Backend` into a mutating protocol; see Decisions.
+- `modules/04-agentic-orchestration/README.md`: full exercise, two-tier gate, rubric (4 criteria), required-to-advance, self-check, takeaway — replacing the design-phase skeleton.
+- `modules/04-agentic-orchestration/checkpoint.md`: 14 originally-written questions, full CCA-F Domain 1 coverage (Task Statements 1.1-1.7).
+- `fixtures/resolve/SPEC.md`: Module 04 status row and detail section added; "Running it" section extended.
+- `modules/README.md`: content-status line updated (Modules 01-04 real, 05-10 skeleton).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 Module 04 entries: both tiers built together; the deferred stateful-backend question resolved (orchestration only, no refund persistence/idempotency in this module); 4 dry-run attempts constructed, including one (`thin-docstring-attempt`) built proactively to isolate the conceptual-tier rubric gap before any external review, rather than after one — the first module in this arc to apply that discipline from the start rather than learning it via remediation.
+
+### Assumptions
+
+Rubric criterion 3 (rejection-message quality beyond the deterministic keyword check) has no dry-run attempt isolating it specifically. No doubt-driven-development review has been run against this module yet — pending, per standing practice.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Offer and (if accepted) run doubt-driven-development review (fresh Claude subagent + Codex + Fable replan) before treating Module 04 as done. Then Module 05 (Context and Reliability at Scale), `check_module_04` ready to chain. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_04.py` run against all 5 constructed attempts (correct/no-hook/text-parsing/trusts-attempted-call/thin-docstring) plus the cumulative-gate chain (Module 01 → 02 → 03 → 04) — all match expectations. Full regression re-run across all prior modules' dry-run attempts (Module 01: 4 attempts, Module 02: 4 attempts, Module 03: 3 attempts) after this module's `backend.py` docstring edit — no change in outcomes.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
+
+## 2026-07-15/16 (cont'd) - Doubt-driven-development review of Module 04, and remediation
+
+Ran the same process as Modules 01-03: a fresh-context Claude subagent (adversarial review, ARTIFACT+CONTRACT only), Codex CLI (with live repo exploration and its own constructed attacks), then a Fable-model critique of the remediation itself once fixes were applied — the last step had been skipped in the rush to fix and was added back in for consistency with standing practice.
+
+### What changed
+
+- **Dominant finding (both reviewers, independently reproduced live):** `verify_before_refund_hook` blocked `process_refund` based on "did *any* `get_customer` call succeed in this session," never checking *which* customer it verified — a session verifying customer A could refund customer B, undetected by all 5 originally-constructed dry-run attempts. Fixed: `SessionState` gained `verified_customer_id`, set only from a successful `get_customer` result's actual `customer_id`; the hook now requires an exact match. Test suite grew 12→16, then 17 after the Fable pass found the fix's false-allow direction was untested (see below).
+- **4 further findings from Claude+Codex:** a test-double loophole (spy tools silently tolerated a missing `backend` kwarg an implementation needs to pass to the real tools — fixed with a keyword-only required parameter, verified via a constructed submission that omits it: `TypeError`); a factually-wrong checkpoint answer (Q14 claimed session forking isolates real-world tool-call side effects, not just conversation state — rewritten so the misconception is the wrong answer); a stale cross-module contradiction (Module 03's README still promised refund persistence was "Module 04's exercise," contradicting the actual scope decision — fixed in Module 03's live README); a checkpoint/README pass-threshold arithmetic mismatch (12/14 vs. 11/14 — fixed to 12/14, matching 80% rounded up correctly).
+- **3 further findings from the Fable critique of the remediation:** stale pre-fix rule statements survived in two live documents (`fixtures/resolve/SPEC.md`, the shipped `process_refund.py` and its copies across all 5 Module 04 attempt directories) — fixed to name the customer-identity binding explicitly; a stale quotation of the pre-fix docstring wording survived inside the shipped `tests/test_agent.py` — fixed; `trusts-identifier-attempt` (renamed from `trusts-attempted-call-attempt`, whose original bug became unobservable once identity-binding existed) was only caught in the false-block direction, not the false-allow direction the bug actually reintroduces — added a 17th test closing this, `trusts-identifier-attempt` now fails 2/17.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-15 Module 04 doubt-driven-development and Fable-critique entries.
+
+### Assumptions
+
+Module 04 rubric criterion 3 (rejection-message quality) still has no isolating dry-run attempt. No attempt constructs a long, realistic multi-turn session exercising the hook under drift across several unrelated customers.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries, except one process observation: Codex's Module 04 review attempted to run `bash ~/hekton/scripts/end-session.sh` again despite making zero changes and the 2026-07-15 scoping fix to `CLAUDE.md` — failed safely (read-only sandbox, missing `--title`), but confirms prose scoping doesn't reliably bind an external CLI's own judgment. Logged in `docs/next-actions.md`, not fixed (same out-of-scope reasoning as the prior factory-wide audit item).
+
+### Next Actions
+
+Module 05 (Context and Reliability at Scale), continuing `resolve`, both tiers together, doubt-driven-development before done. `check_module_04` is ready to chain. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_04.py` re-run against all 5 attempts (17 tests each) after every fix — correct 17/17, no-hook 12/17 (5 fail), text-parsing 16/17 (1 fail), trusts-identifier 15/17 (2 fail, both directions of its bug), thin-docstring 17/17 (conceptually weak). A constructed submission omitting `backend=backend` fails loudly (`TypeError`, 9/17 fail). Full regression re-run across Modules 01-03's own dry-run attempts (4+4+3 attempts) after every Module 04 doc/code edit — all outcomes match their pre-existing expected results exactly, no regressions introduced at any point in this remediation.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
