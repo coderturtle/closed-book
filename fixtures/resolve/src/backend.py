@@ -7,13 +7,20 @@ Real implementations query resolve's actual customer/order systems. The test
 suite supplies a FakeBackend with scripted records.
 
 **Scope, stated explicitly:** this protocol is read-only (lookups only, no
-mutation). Module 03's tools verify a refund *decision* -- is this customer
-real, does this order belong to them, is the amount within what's
-refundable. Actually *executing* a refund -- persistence, decrementing
-`refundable_cents`, idempotency against a double-submitted request -- needs
-a stateful backend and is explicitly Module 04's exercise, not an omission
-here. `process_refund`'s "success" response in this module means "this
-refund decision was verified valid," not "money has moved."
+mutation), and stays that way for the rest of this project. Module 03's
+tools verify a refund *decision* -- is this customer real, does this order
+belong to them, is the amount within what's refundable. `process_refund`'s
+"success" response means "this refund decision was verified valid," not
+"money has moved."
+
+Module 04 does not extend this into a stateful, mutating backend. Its
+exercise is orchestration -- the agentic loop and the session-level hook
+that decides *whether* `process_refund` may be called at all -- not
+refund persistence or idempotency against a double-submitted request.
+Those are real production concerns, but they belong to Domain 2 (tool
+design) territory this project already resolved in Module 03, not to
+Domain 1 (agentic orchestration), which is what Module 04 teaches. See
+`docs/decisions.md` for the record of this scope call.
 """
 from __future__ import annotations
 

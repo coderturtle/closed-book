@@ -1,0 +1,4 @@
+# Requires Python 3.9+ (src/extraction.py uses PEP 585 generic subscripting
+# outside annotation position -- `from __future__ import annotations` doesn't
+# cover it). Found during Module 02's doubt-driven-development review.
+pytest>=8.0
