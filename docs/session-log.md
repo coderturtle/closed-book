@@ -347,3 +347,77 @@ Module 05 (Context and Reliability at Scale), continuing `resolve`, both tiers t
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-16 - Module 05 authored (Context and Reliability at Scale)
+
+Fifth Coachgremlin content pass, continuing `resolve`. Both tiers built together from the start.
+
+### What changed
+
+- `fixtures/resolve/src/context.py`: `CaseFact`/`CaseFacts` (data structures, provided) and two exercise functions, `update_case_facts` (sourced, conflict-annotated fact extraction from tool results — reads results, never requests) and `should_escalate` (a structured escalation decision checking conflicts, then a real error-count threshold, then iteration proximity, in that order; deliberately no `confidence` parameter in its signature).
+- `fixtures/resolve/tests/test_context.py`: a real, provided pytest suite (20 tests).
+- `scripts/verify_module_05.py`: chains `check_module_04` (which chains `check_module_03`, `check_module_02`, `check_module_01`).
+- Two new files only — no prior module's shipped stub or test file touched. Full regression across all 16 prior dry-run attempts (Modules 01-04) confirms zero interference, empirically, not just by inspection.
+- `modules/05-context-reliability/README.md`: full exercise, two-tier gate, rubric (3 criteria), required-to-advance, self-check, takeaway — replacing the design-phase skeleton.
+- `modules/05-context-reliability/checkpoint.md`: 12 originally-written questions, full CCA-F Domain 5 coverage (Task Statements 5.1-5.6).
+- `fixtures/resolve/SPEC.md`: Module 05 status row and detail section added; "Running it" extended.
+- `modules/README.md`: content-status line updated (Modules 01-05 real, 06-10 skeleton).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-16 entries: scoping decision (5.3/5.4 have no `resolve`-specific artifact yet, checkpoint-only); the explicit statement that this module's conflict-preserving design and Module 04's overwrite-on-verify design are both correct for different reasons, not a contradiction; 4 flawed attempts plus a proactively-built conceptually-weak one; a test-suite gap (independent conflicts across two different fields) found and closed before shipping, growing the suite from 19 to 20 tests.
+
+### Assumptions
+
+No doubt-driven-development review has been run against this module yet — pending, per standing practice.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Offer and (if accepted) run doubt-driven-development review (fresh Claude subagent + Codex + Fable critique of the remediation) before treating Module 05 as done. Then Module 06 (Foundations Capstone), `check_module_05` ready to chain. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_05.py` run against all 5 constructed attempts (correct/silent-overwrite/request-trusting/confidence-proxy/thin-docstring) plus the cumulative-gate chain (Module 01 → 02 → 03 → 04 → 05) — all match expectations. Full regression re-run across Modules 01-04's own dry-run attempts (4+4+3+5 = 16 attempts) after adding Module 05's two new files — all outcomes match their pre-existing expected results exactly.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
+
+## 2026-07-16 (cont'd) - Doubt-driven-development review of Module 05, and remediation (two rounds)
+
+Ran the same process as Modules 01-04: a fresh-context Claude subagent (adversarial review, ARTIFACT+CONTRACT only), Codex CLI (with its own constructed counter-implementations run live), then a Fable-model critique of the remediation itself.
+
+### What changed
+
+- **Round 1 (Claude + Codex), dominant finding:** the test suite tested `customer_id` far more rigorously than the structurally-identical `order_id`/`refund_amount_cents` mappings — a request-vs-result mixup, a hollow (unsourced) conflict entry, or a silently-overwritten conflict on either of those two fields all passed the original 20 tests. Both reviewers constructed and ran the exact counter-implementations to confirm this, not just identified the gap by inspection. Fixed with symmetric test coverage (request-vs-result test for `lookup_order`, conflict tests for `order_id` and `refund_amount_cents`); `request-trusting-attempt` extended to also misread `lookup_order`. Test suite grew 20→28.
+- **Round 1, 2 further structural findings, each verified against a live counter-implementation:** a shallow-copy non-mutation hole (`dataclasses.replace()` sharing the same `conflicts` list object passed all 20 tests while corrupting the caller's original) and an unenforced `should_escalate` signature guarantee (an unused `confidence` parameter passed all 20 tests) — both fixed with dedicated tests using `inspect.signature` and independent-list checks.
+- **Round 1, 2 smaller findings:** a dead `issue_summary` field (structural risk as an undetected fourth escalation trigger) removed entirely rather than merely documented; an untested iteration boundary (off-by-one passed all 20 tests) closed with a boundary test; checkpoint Q12's overclaim about `source_tool` distinguishing same-tool re-reports (it can't — no call ID or timestamp) rewritten so the overclaim is the wrong answer.
+- **Round 2 (Fable critique of the round-1 remediation):** found the "symmetric coverage" fix was itself still asymmetric — conflict tests for `order_id`/`refund_amount_cents` checked values but not `source_tool`; a failed `lookup_order` could still leak a fact from request args via the same key-collision the success-path fix had just closed; refund conflicts had no most-recent-wins or no-conflict-on-repeat test at all. All four found by constructing and running new counter-implementations against the actual current files, not by re-reading the round-1 diff for plausibility. Fixed; test suite grew 28→30.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-16 Module 05 doubt-driven-development and Fable-critique entries.
+
+### Assumptions
+
+No further review rounds planned; the module has now been through dry-run construction, doubt-driven-development, and a critique of the remediation itself — the same three-stage depth Module 04 established.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing entries.
+
+### Next Actions
+
+Module 06 (Foundations Capstone), continuing `resolve`, `check_module_05` ready to chain. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_05.py` re-run against all 5 attempts (30 tests each) after every fix — correct 30/30, silent-overwrite 24/30 (6 fail), request-trusting 26/30 (4 fail), confidence-proxy 26/30 (4 fail), thin-docstring 30/30 (conceptually weak). Eight ad hoc counter-implementations across both review rounds each fail exactly their own targeted test and pass everything else, confirmed by live execution. Full regression re-run across Modules 01-04's own dry-run attempts (16 attempts) after every Module 05 doc/code edit in this remediation — all outcomes match their pre-existing expected results exactly.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
