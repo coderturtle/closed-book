@@ -35,7 +35,7 @@ risks:
     impact: medium
     status: open
     owner: coderturtle
-    mitigation: "Stages 1-2 (Claude subagent + Codex) already found and fixed two independently-confirmed critical issues plus three further real ones, each verified live against constructed mutants. Stage 3 skipped on explicit user direction after Fable returned 'Usage credits are required for this model.' Re-run Stage 3 against the current files once Fable access is restored."
+    mitigation: "Stages 1-2 (Claude subagent + Codex) already found and fixed two independently-confirmed critical issues plus three further real ones, each verified live against constructed mutants. Stage 3 skipped on explicit user direction after Fable returned 'Usage credits are required for this model.' Re-run Stage 3 against the current files once Fable access is restored. UPDATE 2026-07-17: Fable access confirmed restored -- successfully ran all 3 stages (Claude subagent + Codex + Fable) for Module 10's doubt-driven-development the same day. Module 09's own retro Stage-3 critique against its current, already-twice-fixed files is now unblocked but still not yet run -- remains open until that specific pass happens."
     raised_date: 2026-07-17
     reviewed_date: 2026-07-17
     links:
