@@ -17,6 +17,7 @@ Usage: scripts/verify_module_06.py [path-to-attempt]
 """
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import sys
@@ -31,17 +32,40 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CANONICAL_TEST_FILE = REPO_ROOT / "fixtures" / "resolve" / "tests" / "test_session.py"
 
 
+def _expected_test_count() -> int:
+    return len(re.findall(r"(?m)^def test_", CANONICAL_TEST_FILE.read_text()))
+
+
 def run_session_tests(target: Path) -> tuple[bool, str]:
+    """Copies src/ into a fresh, neutral temp dir and runs pytest with cwd set
+    to THAT dir -- never cwd=target, which would put the submission's own
+    top-level directory at the front of sys.path and let a shadow `pytest.py`
+    bypass the real pytest package entirely. A zero exit code alone isn't
+    sufficient evidence the suite actually ran (submission code executes
+    during pytest's own collection, so `os._exit(0)` at import time kills the
+    subprocess with return code 0 before any test runs) -- also requires the
+    pytest summary itself report the full expected test count passed. See
+    docs/decisions.md's 2026-07-17 entry (found via Module 07's doubt-driven-
+    development and a Fable-model critique of that remediation, fixed across
+    all six checkers at once)."""
+    submission_src = target / "src"
+    if not submission_src.is_dir():
+        return False, f"FAIL: no src/ directory found in the submission at {target}"
+    expected = _expected_test_count()
     with tempfile.TemporaryDirectory() as tmp:
-        test_copy = Path(tmp) / "test_session.py"
+        tmp_path = Path(tmp)
+        test_copy = tmp_path / "test_session.py"
         shutil.copy(CANONICAL_TEST_FILE, test_copy)
+        shutil.copytree(submission_src, tmp_path / "src")
         result = subprocess.run(
             [sys.executable, "-m", "pytest", str(test_copy), "-v"],
-            cwd=target,
+            cwd=tmp_path,
             capture_output=True,
             text=True,
         )
-        return result.returncode == 0, result.stdout + result.stderr
+        output = result.stdout + result.stderr
+        passed = result.returncode == 0 and f"{expected} passed" in output
+        return passed, output
 
 
 def check_module_06(target: Path) -> CheckResult:
