@@ -494,3 +494,47 @@ Part 2 (Architect Professional) begins with Module 07 — no shared-project deci
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-17 - Module 07 authored, opening Part 2; doubt-driven-development finds and fixes a project-wide checker bypass
+
+Part 1 (Modules 01-06) closed with Module 06. This session opened Part 2 (Architect Professional, CCAR-P). Since `fixtures/resolve/SPEC.md` left the Part 2 shared-project question explicitly open, two `AskUserQuestion` rounds resolved it before any content was authored: a new shared system, not a `resolve` continuation (coderturtle's choice, over the recommended "anchor on resolve, artifacts not code"), and an internal AI platform team scenario (coderturtle's choice, matching the recommendation) — named **Foundry**. Module 07 (Designing the Solution: Architecture, Models & Context Strategy) was then authored on Foundry, both tiers together, followed by a doubt-driven-development review whose dominant finding turned out to be project-wide, not Module-07-scoped — the most consequential review this project has run to date.
+
+### What changed
+
+- `fixtures/foundry/`: new shared project. `SPEC.md` (rationale for the new system, compatibility contract explicitly stating Part 2 checkers don't chain back into Part 1's `check_module_06`, module build-out table), `CLAUDE.md`, `requirements.txt`, `src/ticket_triage.py` (stub), `tests/test_ticket_triage.py` (canonical suite, grew from 12 to 20 tests during doubt-driven-development), `docs/adr-0001-ticket-triage-architecture.md` (learner deliverable, not shipped).
+- `scripts/verify_module_07.py`: new checker, first Part 2 gate. Validates two structurally different deliverables in one pass — a real pytest suite, and a regex-based structural check of the ADR (4 required sections, minimum content per section, a keyword check that "Alternatives Considered" names the agentic/`resolve` alternative).
+- `modules/07-solution-design-context-strategy/README.md` and `checkpoint.md`: full exercise, two-tier gate, conceptual rubric (3 criteria), self-check, takeaway; a 14-question closed-book checkpoint covering CCAR-P Domain 1+2, cited by named objective (not invented task-statement numbers, since no granular numbered breakdown exists in this repo's design docs for these two domains — confirmed by search, not assumed).
+- `runs/2026-07-17-module-07-dry-run/`: 5 constructed attempts (1 correct, 4 flawed), all re-verified against the final 20-test suite with clean isolation after every remediation round.
+- **`scripts/verify_module_02.py` through `scripts/verify_module_06.py`** (all five already-merged Part 1 checkers): fixed with the same two-layer hardening found via Module 07's doubt-driven-development — test execution now runs in a neutral temp directory (never `cwd=target`), and requires the pytest summary itself report the full expected test count passed (not just a zero exit code).
+- `fixtures/foundry/SPEC.md`, `modules/README.md`: status rows updated (Module 07 authored; Modules 01-07 now real, 08-10 skeleton).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-17 entries in full — the Part 2 new-system decision, the Foundry scenario choice, Module 07's authoring and design decisions (cache-friendliness as a property distinct from Module 02's retry pattern; the two-artifact-type gate; the no-chain-back-to-Part-1 cumulative-gate deviation), and the three-stage doubt-driven-development review:
+
+- **Stage 1 (Claude subagent):** 10 findings on Module 07's own test suite — a gameable retry-content test, an unexercised default `max_retries`, a memoization loophole, a whitespace-only-`detail` bug, among others.
+- **Stage 2 (Codex cross-model):** found the dominant issue — all six checkers ran pytest with `cwd=target`, letting a submission's own `pytest.py` shadow the real installed pytest package and skip the entire test suite while still reporting a clean pass. Empirically confirmed live against Module 04's checker with a real known-broken implementation (the missing-safety-hook bug from Module 04's own earlier doubt-driven-development) plus a shadow file — clean `Deterministic tier: PASS`.
+- **Fix 1:** neutral-temp-dir test execution, all six checkers.
+- **Stage 3 (Fable-model critique of that remediation):** found the fix closed one vector, not the underlying class — a submission's own code still executes during pytest's collection, so `os._exit(0)` at import time kills the subprocess with return code 0 before any test runs, still reading as a clean pass. Empirically confirmed live the same way, on both Module 04's and Module 07's checkers.
+- **Fix 2:** expected-pass-count verification (the pytest summary must report the full expected count passed), all six checkers. Re-verified live: both bypass classes now correctly fail; `correct-attempt` still passes; all 25 Part 1 dry-run attempts and all 5 Module 07 attempts reproduce their exact prior pass/fail pattern (zero regression, checked twice — once after adding `fixtures/foundry/`, once after this fix).
+- Also fixed from Stages 1-3: 8 test-suite precision gaps in Module 07's own suite (12→20 tests, detailed in `runs/2026-07-17-module-07-dry-run/grading.md`), and an ADR fence-strip mitigation with its own false-positive guard (only strips balanced ``` fences).
+
+### Assumptions
+
+The expected-pass-count check (`f"{expected} passed" in output`) is a coarse proxy — a substring match on pytest's summary line, not machine-parsed structured output. Sufficient at this project's scale; flagged in `docs/next-actions.md` if a future need for structured results arises. No real learner attempt exists yet for Module 07, same open gap as every prior module.
+
+### Risks
+
+The pytest-shadow and `os._exit` bypasses were live in all 6 checkers' `main` branch code (Modules 02-06 already merged) from each module's original authoring date until this session's fix — no evidence either was exploited (this is a solo/small-audience workshop, not yet publicly load-bearing), but it's a real historical exposure window, not merely a theoretical one caught in review. Recorded here rather than only in `docs/decisions.md` since it's a project-wide risk, not scoped to Module 07.
+
+### Next Actions
+
+Commit and open a PR for Module 07 plus the six-checker security fix together (same root-cause fix, direct precedent from Module 03's doubt-driven-development fixing a shared hole in Module 02's checker in one PR). Then Module 08 (Building and Proving It: Integration, Evaluation & Optimization), continuing Foundry, chaining `check_module_07` for real. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_07.py` re-run against all 5 attempts after every fix round — correct 20/20, no-retry 10/20, system-prompt-mixes-ticket 17/20, regenerates-prompt-on-retry 19/20, weak-adr 20/20 code (ADR-only fail). Both bypass classes (shadow `pytest.py`, `os._exit(0)`) empirically confirmed closed on both Module 04's and Module 07's checkers, post-fix. Full regression across all 25 Part 1 dry-run attempts re-run twice — zero regression both times, exact prior pass/fail patterns reproduced.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.

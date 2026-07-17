@@ -15,3 +15,16 @@ risks:
     reviewed_date: 2026-07-14
     links:
       - "docs/risks.md"
+  - id: RISK-0004
+    title: "Deterministic checkers trusted pytest's exit code alone, allowing a submission to bypass the entire test suite"
+    category: integrity
+    likelihood: low
+    impact: high
+    status: closed
+    owner: coderturtle
+    mitigation: "Test execution moved to a neutral temp directory (never cwd=target) plus expected-pass-count verification of the pytest summary, across all six checkers. Found via Module 07's doubt-driven-development, fixed and empirically re-verified same day."
+    raised_date: 2026-07-17
+    reviewed_date: 2026-07-17
+    links:
+      - "docs/risks.md"
+      - "docs/decisions.md"
