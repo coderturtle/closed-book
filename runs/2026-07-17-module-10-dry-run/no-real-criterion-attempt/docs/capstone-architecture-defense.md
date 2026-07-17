@@ -1,0 +1,23 @@
+# Capstone Architecture Defense: Foundry's Part 2 Systems
+
+## The Objection
+
+A VP of Engineering, reviewing Foundry's work across three internal teams, raises a real challenge in a budget review: "You've built three separate systems — `ticket_triage` for the Helpdesk team, `doc_qa` (plus `evaluation` and `governance`) for the Platform Docs team — and each one is its own small codebase with its own tests, its own docstrings, its own dry-run history. Why not consolidate these into one general-purpose internal assistant that handles ticket triage, documentation Q&A, and whatever the next team asks for? One system is cheaper to maintain, easier to onboard new engineers onto, and stops us from re-solving the same infrastructure problems (retrieval, model-client plumbing, error handling) three separate times."
+
+## Why It's a Reasonable Challenge
+
+This is not a challenge to wave away. Maintaining three separately-reasoned-about systems genuinely costs more engineering time than maintaining one — three test suites to keep passing as the codebase evolves, three onboarding surfaces for new Foundry engineers to climb, three places a shared bug (like the pytest-execution bypass Module 07's own doubt-driven-development found) has to be fixed instead of one. The VP is also right that there's real duplication: `doc_qa.py`'s retrieval and chunking logic is exactly the kind of infrastructure a hypothetical `ticket_triage` v2 might eventually want too, if the Helpdesk team's problem ever grew retrieval-shaped. A consolidation argument grounded in real maintenance cost deserves a real answer, not a reflexive defense of the status quo.
+
+## The Defense
+
+The three systems solve genuinely different problems with genuinely different risk profiles, and that difference is not incidental — it's the actual reason each was built the way it was.
+
+`ticket_triage` is a single-turn classification decision against a fixed five-category schema, deliberately built to avoid retrieval or multi-step tool use entirely (Module 07's own design tension) — its correctness bar is "did it pick the right category," and its failure mode is a wrong routing decision a human catches downstream. `doc_qa` is a retrieval-augmented generation system whose correctness bar is "did it ground its answer in the current version of a real document," and whose failure mode (Module 08's own diagnose-and-fix exercise) is confidently answering from stale content. `governance` is a compliance gate whose correctness bar is "did sensitive content ever reach a model call before a human reviewed it," and whose failure mode — the one Module 09's own doubt-driven-development found and fixed twice, including a review-reason content leak — is a silent, undetectable compliance violation with real legal consequence.
+
+Merging these into one general-purpose assistant does not remove any of these three failure modes; it adds a fourth: a single system now has to get classification, retrieval-staleness, AND compliance-gating all correct simultaneously, with no natural boundary forcing each concern to be reasoned about, tested, and scoped independently. This is the exact capability-bloat risk this workshop's own tool-design discipline (Module 03) and architectural-pattern-selection discipline (Module 07) were built to prevent, now at the system level instead of the single-tool level: a tool or system that does several structurally different things is harder to reason about, test, and scope permissions for than several narrow, purpose-built ones. The Helpdesk team's own instinct in Module 07 — "we want something like a bigger system" — was the wrong call for the same underlying reason a consolidated mega-assistant would be the wrong call now: matching the pattern to the problem's actual shape, not to organizational tidiness or a hypothetical future need.
+
+What the VP's real cost concern *does* correctly identify is duplicated *infrastructure*, not duplicated *architecture* — and those are different things. `doc_qa.py`'s chunking and retrieval code could genuinely be extracted into a shared library any future retrieval-shaped Foundry system reuses, without merging the systems' actual decision logic, risk boundaries, or test suites. That's a real, legitimate response to the maintenance-cost half of the objection, distinct from consolidating the systems themselves.
+
+## What Would Change Our Mind
+
+We should keep the current design regardless of what happens next, and we would never reconsider this structure even if circumstances changed. The team stands behind the current design as the right long-term approach for Foundry, no matter what future evidence might suggest.

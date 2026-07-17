@@ -625,3 +625,46 @@ Commit and open a PR for Module 09 plus the shared Module 01 checker fix togethe
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-17 (cont'd) - Module 10 authored, closing Part 2 and the workshop's full content arc; three-cycle doubt-driven-development finds and fixes the most varied set of issues of any module to date
+
+Module 10 (Professional Capstone: Sit-Ready for CCAR-P) is the tenth and final module, closing Part 2 (Architect Professional) and this workshop's whole 10-module arc. Unlike every prior Part 2 module, it's purely written — no new source file — because the exercise is synthesis, not new build: defending Foundry's own three-system design (`ticket_triage`, `doc_qa`/`evaluation`, `governance`) in writing against a real, seeded VP-of-Engineering objection to consolidate into one general-purpose assistant. Its doubt-driven-development review ran a full three cycles (fresh Claude subagent, Codex cross-model, Fable critique of the remediation) and found a wider variety of issue classes than any prior module — checker exploits, a self-inflicted answer-shuffle corruption bug, a reshuffle that traded one gameable pattern for another, a fix that would have unfairly failed honest learner writing, and a project-wide construct-validity issue predating this module's own authoring.
+
+### What changed
+
+- `scripts/verify_module_10.py`: new checker, chains `check_module_09` (the final link: 07→08→09→10). Validates one prose deliverable (`docs/capstone-architecture-defense.md`) via regex-section-extraction (reusing Module 07/09's `check_adr`/`check_readiness_review` pattern) plus content checks strengthened substantially through this session's three DDD cycles — see Decisions below.
+- `runs/2026-07-17-module-10-dry-run/`: 4 constructed attempts (`correct-attempt`, `no-defense-attempt`, `generic-essay-attempt`, `no-real-criterion-attempt`), each carrying Modules 07-09's own completed work since the gate chains through all three. `grading.md` rewritten to reflect the full three-stage DDD story.
+- `modules/10-professional-capstone/README.md`: full exercise — the seeded VP objection, four required sections, conceptual rubric (3 criteria), self-check, takeaway (a personal CCAR-P exam-day prep sheet, same discipline as Module 06's).
+- `modules/10-professional-capstone/checkpoint.md`: a 42-question, 6-scenario mock exam scaled to CCAR-P's 7 domains and real 63-item/120-minute/720-1000-scoring format (like Module 06 did for CCA-F), including 2 multiple-response questions — new for this capstone, matching the real exam's own format. Went through extensive revision this session: an all-one-letter answer bug and a domain mislabel self-caught before any review; a mechanical answer-shuffle script that corrupted 4 explanation lines, reverted and rebuilt narrower; a second reshuffle after Codex found the first one formed a literal repeating letter cycle; a third reshuffle after Fable found per-scenario letter clustering the second one missed; and a full rewrite of all 42 questions' distractors (Fable's construct-validity finding, fixed per explicit user direction rather than only disclosed).
+- `fixtures/foundry/SPEC.md`, `modules/README.md`: status rows updated — all 10 modules now real, the workshop's full content arc complete.
+- `docs/decisions.md`, `docs/next-actions.md`, `docs/risks.md`, `.hekton/risk-register.yaml`: this module's full authoring + DDD record; RISK-0005 updated to note Fable access is confirmed restored (successfully ran all 3 stages this session), though Module 09's own retro Stage-3 pass remains separately un-run.
+
+### Decisions Made
+
+Full detail in `docs/decisions.md`'s 2026-07-17 Module 10 entries. Summary:
+
+- **Self-caught, before any external review:** an all-one-letter answer bug (39 of 40 "B") and a domain mislabel (3 questions wrongly tagged Domain 1 instead of the established Domain 5), both caught via `grep` against this project's own precedent. A first answer-shuffle script then corrupted 4 explanation lines via an over-broad regex (matching the English article "A" and the term "A/B testing" mid-sentence) — no git history to revert to, so the pre-shuffle content was reconstructed from conversation context and the shuffle rebuilt with a narrower, leading-clause-preserving regex.
+- **Stage 1 (Claude subagent):** 9 findings. One (a claimed D4/F3 domain mislabel) checked against Module 08's own established mapping and found to be **not a bug** — classified as noise. Real: two checker exploits (a throwaway-sentence "Defense" bypass; a falsifiability section combining a trigger word with an explicit refusal to reconsider), two reference-defense gaps (a false binary on the "coordinator" alternative; an unrebutted onboarding-cost argument), two negative dry-run attempts not isolating cleanly, one weak distractor.
+- **Stage 2 (Codex):** found the reshuffled answer key formed a literal repeating A,B,C,D cycle (worse than the "always B" bug caught during authoring — predictable by position) and both multiple-response questions shared the identical correct pair. Also found a checker-fix side effect breaking one negative fixture's isolation, the other negative fixture not exercising its intended bypass, a factual overstatement in the reference defense's steelman, and an underspecified falsifiability condition.
+- **Stage 3 (Fable, critiquing the Stage 1+2 remediation itself):** found the remediation's own new checks had gaps, most seriously a **false-positive risk** — the fix's whole-sentence negation exclusion would have incorrectly failed genuinely honest writing describing real system guarantees in negation-shaped language ("sensitive content never reaches a model call"). Also found the falsifiability check's fixed-phrase list was dodgeable by direct synonym substitution, a self-contradiction introduced by Stage 2's own "coordinator" paragraph fix, a stale negative fixture, and — separate from anything introduced this session — a project-wide, pre-existing construct-validity gap: every one of the 42 questions' distractors used absolute-quantifier language while the correct answer was consistently the hedged option, letting a test-taker score well by surface pattern-matching.
+- **Fixed, all three stages:** checker strengthened with a `DEFENSE_MIN_CHARS` floor specific to "The Defense," a risk-vocabulary + minimum-distinct-terms check (redesigned from whole-sentence negation exclusion to a narrow, proximity-based self-denial-phrase check after Fable's false-positive finding), and a falsifiability check redesigned from fixed phrases to same-sentence co-occurrence of a broadened refusal-word class and reconsider-verb class. The answer key reshuffled a third time with an added per-scenario balance constraint. The reference defense's coordinator paragraph rewritten to resolve its self-contradiction; the onboarding-cost rebuttal and a corrected steelman synced across all fixtures. **All 42 questions' distractors rewritten** across all 6 scenarios to remove absolute-quantifier tells while preserving each option's original category of wrongness — offered as a scope choice via `AskUserQuestion`, user chose the full rewrite over disclosure-only or a partial sample.
+
+### Assumptions
+
+The risk-vocabulary check's residual gap (a purely affirmative, non-negated buzzword mention can still pass) is a disclosed, accepted limitation — no lexical check distinguishes real engagement from name-dropping in every case; the conceptual rubric is the backstop, same precedent as every other prose checker in this project. No real learner attempt exists yet for Module 10, same open gap as every prior module.
+
+### Risks
+
+`RISK-0005` updated, not closed — Fable access confirmed restored (ran successfully for all of Module 10's DDD), but Module 09's own retro Stage-3 critique against its current files still hasn't been run. See `docs/risks.md`.
+
+### Next Actions
+
+Commit and open a PR for Module 10. This closes the workshop's full 10-module content arc — next real milestone per the dogfooding commitment is scheduling the real CCAR-P exam sit. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_10.py` re-run against all 4 attempts after every fix round, plus against Fable's own constructed bypass documents (a hollow-denial defense, a synonym-dodged falsifiability section, an honest-writing negation-shaped defense) — correct-attempt passes clean, all 3 flawed attempts fail exactly their own intended check, both of Fable's adversarial bypasses now correctly fail, and the honest-writing counterexample now correctly passes (confirming the false-positive fix). Checkpoint's structural integrity (42 questions, 168 options, 42 answer-key entries, global and per-scenario 10/10/10/10-ish letter distribution, "A/B testing" term preservation, keyword-overlap cross-check against every single-answer question) reconfirmed after every content revision. Full regression across all 44 attempts project-wide (Modules 01-10) re-run multiple times through all three review cycles — zero regression throughout.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
