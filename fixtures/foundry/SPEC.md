@@ -24,7 +24,7 @@ Same conventions Part 1 established for `resolve`, carried forward rather than r
 |---|---|---|---|---|
 | 07 | Designing the Solution: Architecture, Models & Context Strategy | The IT Helpdesk team: thousands of repetitive internal tickets (password resets, VPN access, software requests) need automated triage, and the team doesn't know if they need "an agent" or something much simpler | A real, working ticket-triage classifier (`src/ticket_triage.py`) with a deliberately cache-friendly prompt structure, plus a real architecture decision record defending the pattern and model choice against a stated, more-complex alternative | Authored, dry-run validated (5 attempts, see `runs/2026-07-17-module-07-dry-run/`) |
 | 08 | Building and Proving It: Integration, Evaluation & Optimization | The Platform Docs team: employees ask ad hoc questions about internal engineering docs (runbooks, onboarding guides), and a prototype gave a confidently wrong answer using an outdated procedure after a revision | A real documentation Q&A system (`src/doc_qa.py`) with a diagnosed-and-fixed stale-retrieval defect, plus a real evaluation harness with an A/B comparison (`src/evaluation.py`) | Authored, dry-run validated (5 attempts, see `runs/2026-07-17-module-08-dry-run/`) |
-| 09 | Shipping Responsibly: Governance, Stakeholders & Team Enablement | Not yet decided | Not yet decided | Not started |
+| 09 | Shipping Responsibly: Governance, Stakeholders & Team Enablement | Shipping Module 08's own `doc_qa` system to real users: the Platform Docs corpus references genuinely sensitive content, and nothing governs, documents, or hands off the system as shipped | A real human-in-the-loop governance gate (`src/governance.py`), a structurally-checked shipping-readiness review, and real `.claude/` team tooling configuration for `fixtures/foundry/` itself | Authored, dry-run validated (5 attempts, see `runs/2026-07-17-module-09-dry-run/`) |
 | 10 | Professional Capstone | all of 07-09 | A real end-to-end architecture review, defended in writing against a stakeholder objection | Not started |
 
 ## Module 07: the IT Helpdesk team's ticket-triage problem
@@ -71,10 +71,34 @@ Two real, gradeable, deliberately independent deliverables:
 
 See `runs/2026-07-17-module-08-dry-run/grading.md` for the real dry run and its findings, and `modules/08-integration-evaluation/README.md` for the full rubric.
 
+## Module 09: shipping Module 08's own system responsibly
+
+### The problem, as it actually applies here
+
+Module 09 doesn't open on a new internal team's problem — it asks what has to happen before Module 08's `doc_qa` system actually ships to real Platform Docs employees. The Platform Docs team's own corpus includes security runbooks and credential-rotation procedures that reference genuinely sensitive content (API keys, passwords, SSNs in old incident writeups) as a byproduct of documenting real incidents. Shipping `answer_question` as-is means any retrieved sensitive content goes straight into a model call, with no review of any kind.
+
+**The real design tension this module's exercise is built around:** a governance gate that returns a correct-looking result (answer withheld, `requires_human_review=True`) can still have already violated the compliance requirement it exists to enforce, if it checks sensitivity *after* calling the model rather than before. Looking right and being right are different claims — a real, constructed dry-run attempt (`bypasses-model-client-attempt`) proves this isn't hypothetical.
+
+### What's already here
+
+`src/governance.py` (stub — `answer_question_with_governance`/`approve_and_release` both raise `NotImplementedError`; `contains_sensitive_content` ships implemented), `tests/test_governance.py` (17 canonical tests, grew from 14 via doubt-driven-development), `docs/shipping-readiness-review.md` (learner-authored deliverable, not shipped), `.claude/` (learner-authored team tooling configuration, not shipped). Checked by `scripts/verify_module_09.py`, which chains `check_module_08`.
+
+### The exercise (see `modules/09-governance-stakeholders/README.md` for the full rubric)
+
+Three real, gradeable deliverables:
+1. **A human-in-the-loop governance gate** (`src/governance.py`): `answer_question_with_governance` must check retrieved content for sensitivity *before* ever calling `model_client`, withholding the answer entirely when flagged; `approve_and_release` requires a real, non-empty `approver_id` as an audit trail before releasing the real answer.
+2. **A shipping-readiness review** (`docs/shipping-readiness-review.md`): Failure Modes, Compliance Requirement and Architectural Consequence, Human-in-the-Loop Checkpoint, Stakeholder Summary.
+3. **Team tooling configuration** (`.claude/`): real rules scoping `src/**` and `tests/**`, plus a project-scoped slash command, for `fixtures/foundry/` itself — Domain 7's own objective, and Module 01's exercise shape reused in a new project.
+
+### The actual point of this exercise
+
+See `runs/2026-07-17-module-09-dry-run/grading.md` for the real dry run and its findings, and `modules/09-governance-stakeholders/README.md` for the full rubric.
+
 ## Running it
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # first time only
 python3 scripts/verify_module_07.py fixtures/foundry   # from repo root
 python3 scripts/verify_module_08.py fixtures/foundry   # chains Module 07's gate
+python3 scripts/verify_module_09.py fixtures/foundry   # chains Module 08's gate
 ```

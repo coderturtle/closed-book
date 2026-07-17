@@ -582,3 +582,46 @@ Commit and open a PR for Module 08. Then Module 09 (Shipping Responsibly: Govern
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-17 (cont'd) - Module 09 authored, continuing Foundry with a shipping-decision exercise; doubt-driven-development's most severe finding to date
+
+Module 09 (Shipping Responsibly: Governance, Stakeholders & Team Enablement) breaks the pattern every prior Part 2 module followed — it doesn't open on a new internal team's problem. It asks what has to happen before Module 08's own `doc_qa` system actually ships, given the Platform Docs corpus references genuinely sensitive content. Its doubt-driven-development review found the single most severe issue of any module in this project: a submission checking the query string instead of retrieved chunk content for sensitivity passed all 14 original tests while completely defeating the module's core safety property.
+
+### What changed
+
+- `fixtures/foundry/src/governance.py`: ships as a stub (`answer_question_with_governance`/`approve_and_release` raise `NotImplementedError`; `contains_sensitive_content` ships implemented) — a human-in-the-loop gate wrapping `doc_qa.answer_question`, inspecting retrieved chunks for sensitive content (keyword-based: SSN, password, credential, etc.) before ever calling `model_client`.
+- `fixtures/foundry/tests/test_governance.py`: canonical suite, grew from 14 (as originally authored) to 17 via doubt-driven-development.
+- `scripts/verify_module_09.py`: new checker, chains `check_module_08` for real. Validates three structurally different deliverables in one gate — code (governance tests), prose (a regex-section-checked shipping-readiness review, reusing Module 07's `check_adr` pattern), and filesystem config (`.claude/` team tooling, reusing Module 01's frontmatter-parsing helpers).
+- `runs/2026-07-17-module-09-dry-run/`: 5 constructed attempts (1 correct, 4 flawed — `unfixed`, `no-review-doc`, `weak-tooling`, `bypasses-model-client`), each carrying Modules 07-08's own completed work since the gate chains through both.
+- `modules/09-governance-stakeholders/README.md` and `checkpoint.md`: full exercise, two-tier gate, conceptual rubric (3 criteria), self-check, takeaway; a 14-question closed-book checkpoint covering CCAR-P Domain 5+6+7.
+- **`scripts/verify_module_01.py`**: a real, shared precision bug fixed alongside Module 09's own — Codex confirmed the same bare-directory-glob-match weakness (`paths: ["src"]` with no wildcard satisfying "scopes real files" without matching any real file) existed in Module 01's own already-merged checker, since Module 09 reused its frontmatter-parsing helpers. Fixed in both at once.
+- `fixtures/foundry/SPEC.md`, `modules/README.md`: status rows updated (Module 09 authored; Modules 01-09 now real, Module 10 skeleton).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-17 Module 09 entries in full. Summary of the doubt-driven-development review:
+
+- **Stage 1 (Claude subagent):** most severe finding of any module to date, **empirically confirmed live**: every one of the 14 original tests placed the sensitive marker word in both the query string and the retrieved chunk's text, so a submission checking `contains_sensitive_content(query)` instead of each chunk's own content passed all 14 tests while completely defeating the module's purpose. Also found the shared `.claude/` checker weakness and disclosed (not fixed) `approve_and_release`'s lack of binding to a real identity system.
+- **Stage 2 (Codex):** confirmed the query-vs-chunk finding and the shared checker bug's root cause, then found its own dominant, **empirically confirmed live** issue: `review_reason` could leak the actual sensitive chunk content back to the caller (`review_reason = flagged[0].text` passed all 14 tests) — the field meant to protect the content instead exposed it.
+- **Fixed:** two new tests closing both critical gaps, `answer is None` assertions added to 3 previously-uncovered withholding tests, a default-`top_k` test for `approve_and_release` (suite 14→17); the shared bare-directory-match bug fixed in both `verify_module_01.py` and `verify_module_09.py` at once, re-verified live that the bypass is closed on both and that all of Module 01's own dry-run attempts plus the full 25-attempt Part 1 regression (which chains through `check_module_01`) still reproduce their exact expected pattern.
+- **Stage 3 (Fable-model critique):** unavailable this session — returned "Usage credits are required for this model," an account-level limit. Proceeded without it on explicit user direction rather than retrying indefinitely; logged as `RISK-0005` (open) rather than silently treated as complete.
+
+### Assumptions
+
+`contains_sensitive_content`'s keyword-based detection remains a coarse, disclosed proxy (won't catch a bare SSN digit pattern without the word "SSN" nearby), matching `doc_qa.py`'s own `score_chunk` precedent. `approve_and_release`'s lack of binding to a specific flagged query or real identity system is a genuine, disclosed simplification given no real auth system exists in this environment. No real learner attempt exists yet for Module 09, same open gap as every prior module.
+
+### Risks
+
+New: `RISK-0005` (open) — Module 09's doubt-driven-development only completed 2 of 3 standard stages; the Fable-model critique should be re-run against the current, already-twice-fixed files once access is restored. See `docs/risks.md`.
+
+### Next Actions
+
+Commit and open a PR for Module 09 plus the shared Module 01 checker fix together (same precedent as Module 07's project-wide security fix). Then Module 10 (Professional Capstone), continuing Foundry, chaining `check_module_09` for real — closes Part 2 in full. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_09.py` re-run against all 5 attempts after every fix round — correct 17/17, unfixed 5/17 (12 fail) plus missing review/tooling, no-review-doc 17/17 code (review-only fail), weak-tooling 17/17 code (tooling-only fail, 2 checks), bypasses-model-client 11/17 (6 fail, all governance/call-order-related). Both critical new tests verified live against their exact target mutants (query-vs-chunk confusion, review_reason content leak) before being trusted. The shared Module 01/09 checker fix verified live on both checkers plus a full 25-attempt Part 1 regression re-run — zero regression.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.
