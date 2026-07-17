@@ -28,3 +28,16 @@ risks:
     links:
       - "docs/risks.md"
       - "docs/decisions.md"
+  - id: RISK-0005
+    title: "Module 09's doubt-driven-development only completed 2 of 3 standard review stages (Fable-model critique unavailable)"
+    category: process
+    likelihood: low
+    impact: medium
+    status: open
+    owner: coderturtle
+    mitigation: "Stages 1-2 (Claude subagent + Codex) already found and fixed two independently-confirmed critical issues plus three further real ones, each verified live against constructed mutants. Stage 3 skipped on explicit user direction after Fable returned 'Usage credits are required for this model.' Re-run Stage 3 against the current files once Fable access is restored."
+    raised_date: 2026-07-17
+    reviewed_date: 2026-07-17
+    links:
+      - "docs/risks.md"
+      - "docs/decisions.md"

@@ -147,12 +147,17 @@ def check_module_01(target: Path) -> CheckResult:
             if not _is_safe_pattern(pattern):
                 unsafe_patterns.append(f"{f.name}: '{pattern}'")
                 continue
-            matches = list(target.glob(pattern))
+            # Files only -- a pattern like `paths: ["src"]` (no glob) would
+            # otherwise match the bare directory node itself and count as
+            # "scoping real files" without matching anything inside it.
+            # Found via Module 09's doubt-driven-development (Codex found
+            # the same root cause shared by this checker), fixed here too.
+            matches = [m for m in target.glob(pattern) if m.is_file()]
             if not matches:
                 continue
-            if any(target / "src" / "tools" in m.parents or m == target / "src" / "tools" for m in matches):
+            if any(target / "src" / "tools" in m.parents for m in matches):
                 tools_scoped = True
-            if any(target / "tests" in m.parents or m == target / "tests" for m in matches):
+            if any(target / "tests" in m.parents for m in matches):
                 tests_scoped = True
             result.ok(f"rules file {f.name}'s pattern '{pattern}' matches {len(matches)} real file(s)")
 
