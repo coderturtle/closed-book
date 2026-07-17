@@ -538,3 +538,47 @@ Commit and open a PR for Module 07 plus the six-checker security fix together (s
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+## 2026-07-17 (cont'd) - Module 08 authored, continuing Foundry with a genuine RAG exercise; two-cycle doubt-driven-development
+
+Continuing the same session after Module 07's PR merged. User said "lets move onto 8" — proceeded autonomously on scenario design (matching the established pattern for every prior module's exercise design), same as Module 07's own autonomous scenario choice. Mid-session, the user also asked for a review of `claudecertificationguide.com` (an independent, explicitly-unaffiliated third-party study site) for anything worth reusing — found its domain weights, mock-exam structure, and scenario-pool format closely matched what this project had already independently derived from Anthropic's own primary-source PDF, useful as confirmation but nothing new to incorporate, consistent with this project's standing discipline against relying on third-party prep-site content.
+
+### What changed
+
+- `fixtures/foundry/src/doc_qa.py`: ships mostly working (chunking, indexing, retrieval, grounded answer generation all correct as shipped) with one seeded staleness defect in `refresh_index` — checks `doc_id` presence, not content, anchored to the CCAR-P exam guide's own Sample Question 3. Requesting team: the **Platform Docs team**, whose documentation Q&A problem genuinely needs RAG, unlike Module 07's classifier.
+- `fixtures/foundry/src/evaluation.py`: ships as a stub (`evaluate`/`compare_top_k`), matching Module 07's build-from-stub shape — the module's second, deliberately independent deliverable.
+- `fixtures/foundry/tests/test_doc_qa.py`: canonical suite, grew from 21 (as originally authored) to 34 across two doubt-driven-development review cycles.
+- `scripts/verify_module_08.py`: new checker, chains `check_module_07` for real. Applied the neutral-temp-dir + expected-pass-count checker hardening from Module 07's own doubt-driven-development *from the start*, not discovered via a later review this time.
+- `runs/2026-07-17-module-08-dry-run/`: 5 constructed attempts (1 correct, 4 flawed — `unfixed`, `stale-fix-only`, `eval-only`, `broken-eval-metric`), each carrying Module 07's own completed work since the gate chains it.
+- `modules/08-integration-evaluation/README.md` and `checkpoint.md`: full exercise, two-tier gate, conceptual rubric (3 criteria), self-check, takeaway; a 14-question closed-book checkpoint covering CCAR-P Domain 3+4, cited by named objective (same disclosed citation-style deviation as Module 07's checkpoint, since no granular numbered breakdown exists for these domains either — confirmed by search).
+- `fixtures/foundry/SPEC.md`, `modules/README.md`: status rows updated (Module 08 authored; Modules 01-08 now real, 09-10 skeleton).
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-17 Module 08 entries in full. Summary of the two-cycle doubt-driven-development review (Claude subagent → Codex cross-model → Fable-model critique of the remediation, repeated a second time after Fable's own critique surfaced a further gap):
+
+- **Cycle 1, Stage 1 (Claude subagent):** 8 findings, 3 empirically confirmed live by constructing submissions that passed the original 21-test suite while violating the contract — a `refresh_index` doing a full rebuild every call passed because the "leaves unchanged docs untouched" test only checked value equality on a frozen dataclass; a `refresh_index` mutating its input `index` in place and returning that same object also passed, since the relevant tests compared the returned index against the original *after* the call (tautological when they're the same object); `evaluate`'s default `top_k=3` was never exercised.
+- **Cycle 1, Stage 2 (Codex):** found 4 further issues (`evaluate` not forced through real retrieval; `compare_top_k` not forced to evaluate the full dataset per k; `refresh_index`'s shallow copy sharing mutable chunk-list references across old/new index; `answer_question` validating field presence but not type) — and one claim tested live and **refuted**: a fake-summary-line checker bypass that doesn't actually work, because pytest's own output capturing during collection swallows a `print()` before `os._exit(0)` can flush it, confirmed even with an explicit flush call.
+- **Cycle 1 fix:** all 8 confirmed findings closed, test suite 21→32, each new test verified live against its own constructed counter-implementation.
+- **Cycle 2 (Fable-model critique of that remediation):** found the fix substantially real (independently re-verified the 32-test count and every attempt's isolation numbers) but not fully complete — most severe, **empirically confirmed live**: an `evaluate` hardcoding `top_k=3` internally while `compare_top_k` reimplemented top_k handling as an independent loop (never actually calling `evaluate`) passed all 32 tests, since no test called `evaluate` directly with a non-default `top_k`. Also found a false-failure risk in a spy test (positional-arg coupling) and an untested `failures`-deduplication path.
+- **Cycle 2 fix:** all 3 gaps closed, test suite 32→34, each verified against its own constructed mutant. Stop condition met — the third review pass's remaining findings were the already-disclosed out-of-scope assumptions, re-confirmed as genuinely low-risk, requiring no further code changes.
+
+### Assumptions
+
+Two Codex findings (`chunk_size` changing between an index's `build_index` and later `refresh_index` calls; `refresh_index` trusting an externally-corrupted `DocIndex`) were deliberately left unfixed and disclosed as stated assumptions in `refresh_index`'s own docstring, re-confirmed as genuinely low-risk by the Fable critique's own adversarial testing rather than just asserted. No real learner attempt exists yet for Module 08, same open gap as every prior module.
+
+### Risks
+
+No new risks beyond `docs/risks.md`'s existing RISK-0004 (closed, from Module 07's own checker-bypass finding) — Module 08's checker was built with that fix applied from the start, so it never carried the same exposure window.
+
+### Next Actions
+
+Commit and open a PR for Module 08. Then Module 09 (Shipping Responsibly: Governance, Stakeholders & Team Enablement), continuing Foundry, chaining `check_module_08` for real — scenario not yet decided, covering CCAR-P Domain 5+6+7. See `docs/next-actions.md`.
+
+### Validation status
+
+`scripts/verify_module_08.py` re-run against all 5 attempts after every fix round — correct 34/34, unfixed 15/34 (19 fail), stale-fix-only 20/34 (14 fail), eval-only 29/34 (5 fail, all staleness-related), broken-eval-metric 28/34 (6 fail, all metric-related, disjoint from eval-only's). Every subtle new test (no-recompute spy, no-mutation snapshot, list-independence, real-retrieval-routing, full-dataset-per-k, non-default-top_k, duplicate-query-dedup) verified live against its own hand-constructed counter-implementation before being trusted, not just written and assumed correct. Full regression across all 25 Part 1 dry-run attempts and all 5 Module 07 attempts re-run multiple times through both review cycles — zero regression throughout.
+
+### Mind-palace updated
+
+Not yet this session — pending before push/PR.

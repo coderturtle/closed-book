@@ -23,7 +23,7 @@ Same conventions Part 1 established for `resolve`, carried forward rather than r
 | # | Module | Internal team & problem | Capability added to Foundry | Status |
 |---|---|---|---|---|
 | 07 | Designing the Solution: Architecture, Models & Context Strategy | The IT Helpdesk team: thousands of repetitive internal tickets (password resets, VPN access, software requests) need automated triage, and the team doesn't know if they need "an agent" or something much simpler | A real, working ticket-triage classifier (`src/ticket_triage.py`) with a deliberately cache-friendly prompt structure, plus a real architecture decision record defending the pattern and model choice against a stated, more-complex alternative | Authored, dry-run validated (5 attempts, see `runs/2026-07-17-module-07-dry-run/`) |
-| 08 | Building and Proving It: Integration, Evaluation & Optimization | The Platform Docs team: employees ask ad hoc questions about internal engineering docs (runbooks, onboarding guides), and a prototype gave a confidently wrong answer using an outdated procedure after a revision | A real documentation Q&A system (`src/doc_qa.py`) with a diagnosed-and-fixed stale-retrieval defect, plus a real evaluation harness with an A/B comparison (`src/evaluation.py`) | Authored, dry-run validated (5 attempts, see `runs/2026-07-17-module-08-dry-run/`) |
+| 08 | Building and Proving It: Integration, Evaluation & Optimization | Not yet decided | Not yet decided | Not started |
 | 09 | Shipping Responsibly: Governance, Stakeholders & Team Enablement | Not yet decided | Not yet decided | Not started |
 | 10 | Professional Capstone | all of 07-09 | A real end-to-end architecture review, defended in writing against a stakeholder objection | Not started |
 
@@ -37,7 +37,7 @@ The Helpdesk team handles roughly 4,000 internal IT tickets a month. Most are on
 
 ### What's already here
 
-`src/ticket_triage.py` (Module 07, stub — both functions raise `NotImplementedError`), `src/doc_qa.py` (Module 08, ships mostly working with one seeded defect) and `src/evaluation.py` (Module 08, stub), `tests/test_ticket_triage.py` (20 canonical tests) and `tests/test_doc_qa.py` (34 canonical tests), `docs/adr-0001-ticket-triage-architecture.md` (learner-authored deliverable, not shipped). Checked by `scripts/verify_module_07.py` and `scripts/verify_module_08.py`.
+`src/ticket_triage.py` (stub, both functions raise `NotImplementedError`), `tests/test_ticket_triage.py` (12 canonical tests), `docs/adr-0001-ticket-triage-architecture.md` (learner-authored deliverable, not shipped) — Module 07 is the first module to add real files to `foundry`. Checked by `scripts/verify_module_07.py`.
 
 ### The exercise (see `modules/07-solution-design-context-strategy/README.md` for the full rubric)
 
@@ -49,32 +49,9 @@ Two real, gradeable deliverables, not one:
 
 See `runs/` for the real dry run and its findings once authored, and `modules/07-solution-design-context-strategy/README.md` for the full rubric.
 
-## Module 08: the Platform Docs team's documentation Q&A problem
-
-### The problem, as the Platform Docs team actually stated it
-
-Employees keep asking the same "how do I..." questions about internal engineering docs (deploy runbooks, onboarding guides) in Slack, and the docs themselves change over time as procedures get revised. An early prototype the Platform Docs team built on their own gave a confidently wrong answer to "how do we roll back a deploy" — it cited an outdated runbook procedure, because the prototype's index was never refreshed after the runbook was revised. This is a genuine RAG use case, unlike Module 07's ticket triage: the corpus is large, it changes, and a correct answer depends on retrieving whichever version of a document is *current*.
-
-**The real design tension this module's exercise is built around:** Module 07 taught recognizing when *not* to reach for a retrieval-heavy pattern; this module teaches the complementary skill — recognizing when RAG genuinely is the right call, and then building and *proving* it works, including proving it keeps working as the underlying documents change. The exam guide's own Sample Question 3 (a RAG system returning confident-but-wrong answers after a document refresh) is this module's real anchor.
-
-### What's already here
-
-`src/doc_qa.py` (ships mostly working — chunking, indexing, retrieval, and grounded answer generation are all correct as shipped; `refresh_index` has one seeded defect to diagnose and fix), `src/evaluation.py` (stub — `evaluate`/`compare_top_k` both raise `NotImplementedError`), `tests/test_doc_qa.py` (34 canonical tests, grew from 21 via doubt-driven-development). Checked by `scripts/verify_module_08.py`, which chains `check_module_07`.
-
-### The exercise (see `modules/08-integration-evaluation/README.md` for the full rubric)
-
-Two real, gradeable, deliberately independent deliverables:
-1. **Diagnose and fix `refresh_index`'s staleness bug** (`src/doc_qa.py`): it checks whether a document's `doc_id` is already present in the index, never whether the document's *content* has actually changed — a revised doc with the same `doc_id` keeps its stale chunks forever.
-2. **Build a real evaluation harness** (`src/evaluation.py`): `evaluate` scores a labeled Q&A dataset against `doc_qa.py` (correct only if the model cites the *specific* expected document, not just any document), and `compare_top_k` runs the same harness under two or more `top_k` values as a real A/B comparison.
-
-### The actual point of this exercise
-
-See `runs/2026-07-17-module-08-dry-run/grading.md` for the real dry run and its findings, and `modules/08-integration-evaluation/README.md` for the full rubric.
-
 ## Running it
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # first time only
 python3 scripts/verify_module_07.py fixtures/foundry   # from repo root
-python3 scripts/verify_module_08.py fixtures/foundry   # chains Module 07's gate
 ```
