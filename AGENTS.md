@@ -40,4 +40,6 @@ All of the following must be kept current:
 
 ## Session Closeout & Radar
 
-End every session by running `bash ~/hekton/scripts/end-session.sh` from anywhere inside this repo. It writes the session log and captures Blog Radar (`--blog-worthy`) and Gremlin Radar (`--gremlin-radar`) signals into the central ledgers under `~/hekton/state/`. A project-local `scripts/end-session.sh`, if one is ever added, must keep capturing Blog Radar signals via `~/hekton/scripts/capture-blog-signal.sh`.
+**If this session made changes to the repo**, close it by running `bash ~/hekton/scripts/end-session.sh` from anywhere inside this repo. **Do not run this for a read-only session** (e.g. a review or audit that made no edits) — it writes to `docs/session-log.md` and central ledgers, which a read-only reviewer should never do. (An unconditional version of this instruction caused a read-only adversarial-review agent to attempt running it during a doubt-driven-development pass on 2026-07-15; it failed safely under a read-only sandbox, but the instruction itself was the bug — see `CLAUDE.md`.)
+
+It writes the session log and captures Blog Radar (`--blog-worthy`) and Gremlin Radar (`--gremlin-radar`) signals into the central ledgers under `~/hekton/state/`. A project-local `scripts/end-session.sh`, if one is ever added, must keep capturing Blog Radar signals via `~/hekton/scripts/capture-blog-signal.sh`.

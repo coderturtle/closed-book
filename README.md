@@ -30,7 +30,7 @@ cat modules/README.md
 
 Then work through `modules/` in order. Each module states a hard prerequisite on an earlier one.
 
-> **Current status: skeleton only.** All 10 modules have a decided question, gate shape, and takeaway shape (see [`modules/README.md`](modules/README.md)), but no authored exercise or closed-book question bank yet. Watch `docs/build-log/` for progress, or [open an issue](https://github.com/coderturtle/closed-book/issues) to ask.
+> **Current status: all 10 modules are real.** The workshop's full content arc is complete: every module has a working hands-on exercise, a real deterministic checker, a closed-book checkpoint, and a completed multi-attempt dry run (see [`modules/README.md`](modules/README.md) for the module-by-module status). Read `docs/build-log/` for the story of how it got built, or [open an issue](https://github.com/coderturtle/closed-book/issues) to ask.
 
 ## How the modules connect
 
@@ -46,7 +46,7 @@ Every module leaves you with something, not just a passed check: a CLAUDE.md sta
 
 ## Build in public
 
-This workshop's own build is published as a dated journal at `coderturtle.github.io/closed-book` once the first deploy is triggered (site build still pending): the maintainer's record of building the workshop, written deliberately rather than auto-generated from session logs.
+This workshop's own build is published as a dated journal at [closed-book.coderturtle.io](https://closed-book.coderturtle.io): the maintainer's record of building the workshop, written deliberately rather than auto-generated from session logs.
 
 ## Something wrong?
 
