@@ -1,16 +1,18 @@
 name: Deploy build log to GitHub Pages
 
-# Human Gate: first deploy is workflow_dispatch-only, run on explicit human confirmation.
-# Once that first deploy is confirmed working, uncomment the push trigger below so
-# subsequent build-log updates auto-publish.
+# Human Gate cleared 2026-07-18: first deploy (workflow_dispatch, run
+# 29638332750) confirmed working end to end — site live at
+# closed-book.coderturtle.io serving real content. Push trigger enabled below
+# so subsequent build-log updates auto-publish, same precedent as
+# terminal-velocity/borrow-native/half-life.
 on:
   workflow_dispatch: {}
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - "site/**"
-  #     - "docs/build-log/**"
-  #     - ".github/workflows/deploy-pages.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "docs/build-log/**"
+      - ".github/workflows/deploy-pages.yml"
 
 permissions:
   contents: read

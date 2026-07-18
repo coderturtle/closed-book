@@ -729,3 +729,88 @@ domain verification once DNS resolves, then review/merge this branch's PR before
 ### Mind-palace updated
 
 No — not yet authorised this session.
+
+---
+
+## 2026-07-18 - DNS live; PR #15 merged; domain verification is the one step left
+
+**Agent:** Claude
+
+### What changed
+
+- Human ran `terraform apply` in `agentic-infra-lab` for closed-book's DNS. Verified live via
+  `dig` against public resolvers (CNAME → `coderturtle.github.io.`, TXT value matches), not just
+  trusted from Terraform's output. `.hekton/project.yaml`'s `deployment` block updated:
+  `record_fqdn`, `verification_record_fqdn`, `applied_date: 2026-07-18`,
+  `human_confirmed: true`.
+- Merged PR #15 (`agent/claude/custom-domain-cutover`) into `main` — fast-forward. Local branch
+  and remote feature branch both cleaned up.
+
+### Decisions Made
+
+None new.
+
+### Risks
+
+No new RISK entry.
+
+### Next Actions
+
+See `docs/next-actions.md`: human completes GitHub Pages domain verification
+(`github.com/settings/pages`, browser-only, no API) now that DNS resolves publicly, then triggers
+the first real `workflow_dispatch` deploy.
+
+### Validation
+
+- `dig +short CNAME closed-book.coderturtle.io` / `dig +short TXT
+  _github-pages-challenge-coderturtle.closed-book.coderturtle.io` — real, live queries.
+- `gh pr view 15` confirmed `MERGED`.
+
+### Mind-palace updated
+
+No — not yet authorised this session.
+
+---
+
+## 2026-07-18 (cont'd) - First deploy tested end to end; push trigger enabled
+
+**Agent:** Claude
+
+### What changed
+
+- GitHub Pages domain verification already showed `protected_domain_state: "verified"` when
+  checked this session (completed by the human since the last check).
+- Triggered the first real deploy via `gh workflow run deploy-pages.yml` (run `29638332750`),
+  matching `deploy-pages.yml`'s own stated Human Gate ("first deploy is workflow_dispatch-only,
+  run on explicit human confirmation"). Watched it live: build (24s) and deploy (8s) both green.
+- Confirmed the site is actually live, not just that the workflow reported success:
+  `curl http://closed-book.coderturtle.io/` returned real rendered HTML (nav, recent build-log
+  entries, footer). HTTPS isn't up yet (`https_certificate: null`) — expected, GitHub issues it
+  asynchronously post-verification, same precedent as every prior workshop's first hour.
+- Human Gate condition met, so uncommented `deploy-pages.yml`'s `push` trigger (branch
+  `agent/claude/enable-push-deploy`) — subsequent `site/**`/`docs/build-log/**` changes on `main`
+  now auto-deploy, same as terminal-velocity/borrow-native/half-life.
+
+### Decisions Made
+
+None new — this executes the Human Gate the workflow file already specified, doesn't change it.
+
+### Risks
+
+No new RISK entry.
+
+### Next Actions
+
+Review/merge the `agent/claude/enable-push-deploy` PR. Spot-check HTTPS once GitHub's cert
+issues (non-blocking, async).
+
+### Validation
+
+- `gh run watch 29638332750` — both jobs green, live.
+- `curl http://closed-book.coderturtle.io/` — real content returned, not a placeholder/404.
+- `gh api repos/coderturtle/closed-book/pages` — `protected_domain_state: "verified"`,
+  `https_certificate: null` (expected, not a failure).
+
+### Mind-palace updated
+
+No — not yet authorised this session.
