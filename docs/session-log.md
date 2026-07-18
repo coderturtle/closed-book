@@ -879,3 +879,30 @@ flagged (not fixed) follow-ups. Review/merge the `agent/claude/doc-cleanup-2026-
 ### Mind-palace updated
 
 No — not yet authorised this session.
+---
+
+## Session: Custom domain live, first deploy confirmed end to end; documentation cleanup pass
+
+**Date:** 2026-07-18 20:57
+
+### What Changed
+
+Cut over to custom domain closed-book.coderturtle.io (DNS confirmed via dig, first workflow_dispatch and push-triggered deploys both live and verified via curl), plus a manual documentation cleanup pass (4 stale claims fixed, 3 judgment-shaped findings flagged, no sprawl found)
+
+### Decisions
+
+See docs/decisions.md's 2026-07-17/2026-07-18 entries: custom-domain cutover, documentation cleanup methodology (applied the unbuilt doc-gremlin-team spec by hand)
+
+### Assumptions
+
+None new
+
+### Risks
+
+None new
+
+### Next Actions
+
+- [ ] Spot-check HTTPS cert issuance; review flagged doc gaps (stale maturity_level
+- [ ] blank scaffold stubs
+- [ ] missing docs/walkthroughs entries)
