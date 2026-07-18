@@ -17,3 +17,18 @@ changes:
       status: not_required
     links:
       - "docs/session-log.md"
+
+  - id: CHG-62414e85
+    date: 2026-07-18
+    title: "Custom domain cutover and deploy pipeline confirmation"
+    intent: "Cut over to custom domain closed-book.coderturtle.io (DNS confirmed via dig, first workflow_dispatch and push-triggered deploys both live and verified via curl), plus a manual documentation cleanup pass (4 stale claims fixed, 3 judgment-shaped findings flagged, no sprawl found)"
+    changed_by: "Claude Sonnet 5"
+    change_type: build
+    risk_level: low
+    validation:
+      - "not recorded"
+    approvals:
+      required: false
+      status: not_required
+    links:
+      - "docs/session-log.md"

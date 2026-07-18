@@ -73,3 +73,9 @@
 - [ ] Several scaffold-stub docs are still genuinely blank despite the project being far past scaffold stage: `docs/architecture.md`, `docs/operating-model.md` (Setup/Key Commands/Known Issues sections), `docs/depth-decision.md`, `docs/retire-promote-review.md`, and the TODOs in `docs/setup.md`/`docs/reproducibility.md`. Filling these is real authored content (Documentation Agent's job), not a cleanup-pass fix.
 - [ ] `docs/walkthroughs/` has zero entries despite `CLAUDE.md`'s own Plain-English Walkthrough Contract requiring one per material session — and this project has had many (10 modules, repeated multi-stage DDD reviews, a live custom-domain deploy). The most notable gap the cleanup pass found; deliberately not backfilled wholesale in that pass since retroactively authoring ~15 walkthroughs from session history is a real authoring project of its own, not a cleanup edit.
 - [ ] Mind-palace mirror drift: `scripts/check-mirror-drift.sh` reports `docs/decisions.md`/`docs/session-log.md` ahead of the repo-local mirror. Run `scripts/sync-mirror-to-vault.sh` (or the mirror-only half of it) to catch it up.
+
+## Session Update: 2026-07-18 — Custom domain live, first deploy confirmed end to end; documentation cleanup pass
+
+- [ ] Spot-check HTTPS cert issuance; review flagged doc gaps (stale maturity_level
+- [ ] blank scaffold stubs
+- [ ] missing docs/walkthroughs entries)

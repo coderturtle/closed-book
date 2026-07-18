@@ -35,3 +35,30 @@ Module 09 (Shipping Responsibly: Governance, Stakeholders & Team Enablement) doe
 ## 2026-07-17 (cont'd) - Module 10 authored, closing Part 2 and the workshop's full content arc; three-cycle doubt-driven-development finds the widest variety of issues of any module to date
 
 Module 10 (Professional Capstone: Sit-Ready for CCAR-P) is the tenth and final module, closing Part 2 and this workshop's whole 10-module arc. Purely written — no new source file — since the exercise is synthesis: a real defense of Foundry's own three-system design against a seeded VP-of-Engineering objection to consolidate into one general-purpose assistant, plus a 42-question, 6-scenario mock exam matching Module 06's real-exam-scale precedent, extended with the multiple-response question format. Self-caught before any review: an all-one-letter answer bug, a domain mislabel, and a self-inflicted answer-shuffle corruption bug (no git history existed to revert to, reconstructed from conversation context). Doubt-driven-development then ran a full three cycles — Claude subagent, Codex, and a Fable critique of the remediation itself — finding checker exploits, a reshuffle that traded one gameable letter-pattern for another (caught by Codex), a fix that would have unfairly failed genuinely honest learner writing (caught by Fable), and a project-wide, pre-existing construct-validity issue where every one of the 42 questions' distractors used absolute-quantifier tells. All findings fixed, including a full rewrite of all 42 questions' distractors chosen over disclosure-only per explicit user direction. Full detail: repo `docs/session-log.md`, `docs/decisions.md`, and `runs/2026-07-17-module-10-dry-run/grading.md`.
+---
+
+## Session: Custom domain live, first deploy confirmed end to end; documentation cleanup pass
+
+**Date:** 2026-07-18 20:57
+
+### What Changed
+
+Cut over to custom domain closed-book.coderturtle.io (DNS confirmed via dig, first workflow_dispatch and push-triggered deploys both live and verified via curl), plus a manual documentation cleanup pass (4 stale claims fixed, 3 judgment-shaped findings flagged, no sprawl found)
+
+### Decisions
+
+See docs/decisions.md's 2026-07-17/2026-07-18 entries: custom-domain cutover, documentation cleanup methodology (applied the unbuilt doc-gremlin-team spec by hand)
+
+### Assumptions
+
+None new
+
+### Risks
+
+None new
+
+### Next Actions
+
+- [ ] Spot-check HTTPS cert issuance; review flagged doc gaps (stale maturity_level
+- [ ] blank scaffold stubs
+- [ ] missing docs/walkthroughs entries)
