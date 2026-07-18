@@ -5,12 +5,13 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  // Default GitHub Pages project hosting: coderturtle.github.io/closed-book/.
-  // No custom domain/DNS for this workshop, same precedent as borrow-native.
-  // Every internal link MUST be base-aware (import.meta.env.BASE_URL), not a
-  // bare "/path" - the single most common Pages-project breakage.
-  site: "https://coderturtle.github.io",
-  base: "/closed-book/",
+  // Custom domain (closed-book.coderturtle.io) via GitHub Pages + Route53 CNAME,
+  // see .hekton/project.yaml's `deployment` block and agentic-infra-lab's
+  // patterns/github-pages-dns. Site now serves at the domain root, not under
+  // /closed-book/ on coderturtle.github.io. Every internal link MUST still be
+  // base-aware (import.meta.env.BASE_URL), not a bare "/path".
+  site: "https://closed-book.coderturtle.io",
+  base: "/",
   integrations: [mdx(), tailwind()],
   output: "static",
 });

@@ -43,11 +43,14 @@ jobs:
         run: npm run build
         working-directory: site
 
-      # Default GitHub Pages project hosting (coderturtle.github.io/closed-book/),
-      # no custom domain for this workshop - unlike terminal-velocity's later cutover
-      # to terminal-velocity.coderturtle.io, which needed a real Route53 change via
-      # agentic-infra-lab. Pages enablement itself is still a one-time, human-run step
-      # (Settings > Pages > Source: GitHub Actions) before the first dispatch succeeds.
+      # Custom domain: closed-book.coderturtle.io, via agentic-infra-lab's
+      # github-pages-dns pattern (Route53 CNAME + TXT verification) - same cutover
+      # terminal-velocity did first. site/public/CNAME declares the domain; Pages
+      # enablement and the custom-domain setting were done as one-time, human-run
+      # `gh api` steps (GITHUB_TOKEN cannot do either - see interpreter-notes.md),
+      # not by this workflow. GitHub's domain *verification* (closes the
+      # subdomain-takeover window) is a separate, browser-only step with no API,
+      # done once the Route53 TXT record resolves publicly.
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
