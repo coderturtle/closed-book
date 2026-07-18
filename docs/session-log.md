@@ -814,3 +814,68 @@ issues (non-blocking, async).
 ### Mind-palace updated
 
 No — not yet authorised this session.
+
+---
+
+## 2026-07-18 (cont'd) - Documentation cleanup pass, applying the (unbuilt) Documentation Gremlin Team spec by hand
+
+**Agent:** Claude
+
+### What changed
+
+- User asked to run "our document cleanup workflow." Checked first rather than improvising:
+  `~/hekton/docs/plans/doc-gremlin-team-spec-v1.md` defines exactly this (a Technical
+  Documentation Gremlin for stale-claim drift + an Agent Doc Editor Gremlin for sprawl), but its
+  own status line reads "proposal — needs human review. Nothing here is created or run yet," and
+  no scripts exist. Applied its detection heuristics and quality bar manually instead of standing
+  up unreviewed tooling or inventing an unrelated ad hoc process, scoped to this repo only.
+- Read every claim-bearing doc in the repo (`README.md`, `CLAUDE.md`/`AGENTS.md`/`CODEX.md`,
+  everything under `docs/`, `.hekton/project.yaml`) against actual repo state.
+- **Fixed** (clear drift, evidence-backed, no invented content): README.md's stale "skeleton
+  only / site build pending" status; a retracted "Claude Developer" claim (corrected to "Claude
+  Architect" in this file's very first 2026-07-14 entry) that had survived verbatim in
+  `.hekton/project.yaml`, `docs/human-understanding-check.md`, and
+  `docs/project-walkthrough.md`; `docs/project-walkthrough.md`'s "just scaffolded" status
+  sections; and `AGENTS.md`/`CODEX.md` still carrying the *unconditional* `end-session.sh`
+  instruction `CLAUDE.md` was already patched away from on 2026-07-15 after a real incident.
+- **Flagged, not fixed**: `.hekton/project.yaml`'s stale `maturity_level`/`maturity_basis`
+  (human lifecycle call), several genuinely-blank scaffold-stub docs (net-new authoring, not a
+  cleanup fix), and — the most notable finding — `docs/walkthroughs/` has zero entries despite
+  `CLAUDE.md`'s own Contract requiring one per material session, across many genuinely material
+  sessions. Full detail in `docs/decisions.md`'s 2026-07-18 entry.
+- **No sprawl found**: `CLAUDE.md`/`AGENTS.md`/`CODEX.md` are all well under the spec's size
+  budget; no `docs/plans`/`docs/reports` pile exists to triage.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-18 "Documentation cleanup pass" entry for the full fixed/flagged
+breakdown with evidence.
+
+### Assumptions
+
+None new — every fix cites either an already-established fact elsewhere in this repo's own
+`docs/decisions.md`/`docs/session-log.md`, or a file read directly this session.
+
+### Risks
+
+No new RISK entry.
+
+### Next Actions
+
+See `docs/next-actions.md`'s new "From the 2026-07-18 documentation cleanup pass" section for the
+flagged (not fixed) follow-ups. Review/merge the `agent/claude/doc-cleanup-2026-07-18` PR.
+
+### Validation
+
+- Every "fixed" claim traced to a specific, already-recorded fact (module completion status from
+  `modules/README.md`'s own current text; the Developer→Architect correction from this file's
+  first 2026-07-14 entry; the `end-session.sh` incident from `CLAUDE.md`'s existing note) —
+  nothing asserted without a citable source already in the repo.
+- Confirmed via `grep`/`find` that no dead script/path references exist in `docs/setup.md`,
+  `docs/reproducibility.md`, `AGENTS.md`, `CODEX.md` (all referenced scripts exist).
+- Confirmed no `docs/plans`/`docs/reports` sprawl exists (`find` returned nothing) before
+  reporting "no sprawl found" rather than assuming it.
+
+### Mind-palace updated
+
+No — not yet authorised this session.

@@ -62,7 +62,7 @@ architecture:
   risks: []
   owner: coderturtle
 notes:
-  - Learn Anthropic's Claude Developer certification material (Foundations to Professional) the agent-native way: hands-on Claude Code exercises gated by closed-book practice checkpoints against the published exam blueprint.
+  - Learn Anthropic's Claude Certified Architect material (Foundations to Professional) the agent-native way: hands-on Claude Code exercises gated by closed-book practice checkpoints against the published exam blueprint. (Corrected 2026-07-18: this note still said "Claude Developer" — the pre-correction scope name retracted in docs/decisions.md's very first entry, 2026-07-14, since no Developer-Professional exam exists.)
 
 deployment:
   pattern: github-pages-dns
