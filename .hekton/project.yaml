@@ -64,3 +64,19 @@ architecture:
 notes:
   - Learn Anthropic's Claude Developer certification material (Foundations to Professional) the agent-native way: hands-on Claude Code exercises gated by closed-book practice checkpoints against the published exam blueprint.
 
+deployment:
+  pattern: github-pages-dns
+  subdomain_fqdn: closed-book.coderturtle.io
+  root_domain: coderturtle.io
+  pages_host: coderturtle.github.io
+  repo: coderturtle/closed-book
+  create_domain_verification: true
+  human_confirmed: false
+  hosted_zone_id: Z3DLQAZ6G5LV63
+  # record_fqdn / verification_record_fqdn / applied_date: recorded here once a
+  # human runs `terraform apply` in agentic-infra-lab's patterns/github-pages-dns
+  # (plan already reviewed, classified GREEN 2026-07-17) and confirms it succeeded.
+  # Pages enablement + custom-domain (gh api step 11a) already done 2026-07-17;
+  # GitHub domain verification (step 11b, browser-only, no API) still pending on
+  # the Route53 TXT record resolving publicly post-apply.
+

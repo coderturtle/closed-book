@@ -668,3 +668,64 @@ Commit and open a PR for Module 10. This closes the workshop's full 10-module co
 ### Mind-palace updated
 
 Not yet this session — pending before push/PR.
+
+---
+
+## 2026-07-17 (cont'd) - Custom domain cutover (closed-book.coderturtle.io), following agentic-infra-lab's github-pages-dns onboarding template
+
+**Agent:** Claude
+
+### What changed
+
+- In `agentic-infra-lab` (separate repo, not this one): onboarded closed-book as the fourth
+  `github-pages-dns` Terraform consumer (`module "pages_dns_closed_book"`), real TXT
+  name/value supplied by the user, read-only Route53 preflight confirmed no existing record,
+  `terraform plan` (read-only) → 2 to add, 0 to change, 0 to destroy, classified GREEN. Full
+  record in that repo's own `docs/session-log.md`/`docs/next-actions.md`.
+- Followed `docs/github-pages-dns-implementation-plan.md`'s Phase 3 template (step 11a) rather
+  than leaving it as a manual bullet: ran `gh api --method POST` then `PUT
+  repos/coderturtle/closed-book/pages` directly, under the user's own already-authenticated
+  `gh` session (not a CI workflow — `GITHUB_TOKEN` cannot make this call, per ADR-008).
+  Confirmed: `cname: closed-book.coderturtle.io`, `protected_domain_state: "unverified"`
+  (expected at this stage, not a failure — verification is a separate, later, browser-only step
+  with no API, per ADR-010).
+- On branch `agent/claude/custom-domain-cutover`: `site/astro.config.mjs` (`site`/`base`
+  cutover, same shape as terminal-velocity's), new `site/public/CNAME`, `.hekton/project.yaml`
+  gained a `deployment` block (`human_confirmed: false` — the DNS apply hasn't happened yet),
+  and `.github/workflows/deploy-pages.yml`'s stale "no custom domain for this workshop" comment
+  corrected. `npm run build` reconfirmed clean; routes generate at the domain root, `dist/CNAME`
+  present.
+
+### Decisions Made
+
+See `docs/decisions.md`'s 2026-07-17 "Cut over from project-page hosting" entry.
+
+### Assumptions
+
+None new — TXT/cname values taken verbatim from the user and from GitHub's own API response, not
+derived.
+
+### Risks
+
+No new RISK entry. Same open items as every prior workshop's cutover: HTTPS cert issuance is
+async and unconfirmed until DNS resolves; domain verification is a required, easy-to-silently-skip
+manual step (RISK-0008 precedent in agentic-infra-lab).
+
+### Next Actions
+
+See `docs/next-actions.md`'s updated "Later" section: human `terraform apply` in
+agentic-infra-lab (the only step this template leaves to the human), then GitHub's browser-only
+domain verification once DNS resolves, then review/merge this branch's PR before the first real
+`workflow_dispatch` deploy.
+
+### Validation
+
+- `npm run build` (site) — clean, 11 pages, `dist/CNAME` = `closed-book.coderturtle.io`.
+- `gh api repos/coderturtle/closed-book/pages` — real, live API call confirming `cname` and
+  `build_type` set correctly.
+- `grep` for hardcoded `/closed-book/` links in `site/src/` before the cutover — none found, so
+  the base-path change carried no link-breakage risk.
+
+### Mind-palace updated
+
+No — not yet authorised this session.
