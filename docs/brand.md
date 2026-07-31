@@ -52,7 +52,7 @@ Inherit `borrow-native`'s Astro starter tokens rather than invent a new palette,
 
 ## Gremlin and factory language rules
 
-- Coachgremlin and the Workshop Gremlin are real, documented agents with concrete responsibilities (`~/hekton/gremlins/`) — reference them plainly when explaining how the workshop works, don't decorate every heading with gremlin language, and don't assume a learner already knows what a "Gremlin" is without a one-line explanation the first time the term appears in learner-facing copy.
+- Coachgremlin and the Workshop Gremlin are real, documented agents with concrete responsibilities (`<hekton-machinery>/gremlins/`) — reference them plainly when explaining how the workshop works, don't decorate every heading with gremlin language, and don't assume a learner already knows what a "Gremlin" is without a one-line explanation the first time the term appears in learner-facing copy.
 - A module README is a production artifact: plain. A build-log entry can be funny where the actual events were funny.
 
 ## Anti-goals
