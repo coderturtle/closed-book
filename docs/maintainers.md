@@ -10,7 +10,7 @@ This is the internal/agent-facing doc. Learners should read the top-level `READM
 This repo has two goals:
 
 1. **Ship a workshop** teaching Anthropic's Claude Certified Architect material (Foundations then Professional) to agent-literate practitioners, taught by building every exercise hands-on through Claude Code, then checking recall closed-book against a practice checkpoint modeled on the exam's own published blueprint.
-2. **Test a new curriculum-anchor shape for the Workshop Gremlin pipeline**: this is the pipeline's first run anchored against a certifying body's own primary-source exam guide (not community teaching material, per Terminal Velocity/Borrow Native's precedent) and its first run where the teaching *method* (agent-native) is in deliberate, named tension with the target *evaluation condition* (closed-book, no AI). See `docs/design-tension.md` for the tension and `~/hekton/gremlins/workshop/workshop-gremlin.md` for whether this becomes a documented variant.
+2. **Test a new curriculum-anchor shape for the Workshop Gremlin pipeline**: this is the pipeline's first run anchored against a certifying body's own primary-source exam guide (not community teaching material, per Terminal Velocity/Borrow Native's precedent) and its first run where the teaching *method* (agent-native) is in deliberate, named tension with the target *evaluation condition* (closed-book, no AI). See `docs/design-tension.md` for the tension and `<hekton-machinery>/gremlins/workshop/workshop-gremlin.md` for whether this becomes a documented variant.
 
 ## Implementation Status
 
